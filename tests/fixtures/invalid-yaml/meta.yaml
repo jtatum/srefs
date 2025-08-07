@@ -1,0 +1,7 @@
+id: "invalid
+title: Test Sref"
+description: "This YAML has syntax errors
+tags:
+  - test
+  sample
+cover_image: test.jpg

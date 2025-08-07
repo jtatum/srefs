@@ -1,0 +1,14 @@
+id: "test123"
+title: "Test Sref"
+description: "A test sref for unit testing"
+tags:
+  - test
+  - sample
+  - unit-test
+cover_image: "test1.jpg"
+created: "2024-01-01"
+images:
+  - filename: "test1.jpg"
+    prompt: "test prompt 1"
+  - filename: "test2.jpg"
+    prompt: "test prompt 2"

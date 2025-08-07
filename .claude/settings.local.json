@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install)",
+      "Bash(npx astro add tailwind:*)",
+      "Bash(mkdir:*)",
+      "Bash(npm install:*)",
+      "Bash(curl:*)",
+      "Bash(npx astro add:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm test:*)",
+      "Bash(npm run test:coverage:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": []
+  }
+}

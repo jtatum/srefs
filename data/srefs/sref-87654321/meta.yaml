@@ -1,0 +1,17 @@
+id: "87654321"
+title: "Cyberpunk Neon"
+description: "Dark futuristic style with vibrant neon colors and cyberpunk aesthetics"
+tags:
+  - cyberpunk
+  - neon
+  - futuristic
+  - dark
+  - urban
+  - sci-fi
+cover_image: "cyber1.jpg"
+created: "2024-02-20"
+images:
+  - filename: "cyber1.jpg"
+    prompt: "neon-lit city street at night with rain reflections --sref 87654321"
+  - filename: "cyber2.jpg"
+    prompt: "cyberpunk character with glowing implants --sref 87654321"

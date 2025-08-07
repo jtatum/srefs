@@ -1,0 +1,19 @@
+id: "12345678"
+title: "Ethereal Watercolor Dreams"
+description: "Soft, dreamy watercolor style with flowing pastel tones and ethereal atmosphere"
+tags:
+  - watercolor
+  - pastel
+  - ethereal
+  - soft
+  - dreamy
+  - artistic
+cover_image: "example1.jpg"
+created: "2024-01-15"
+images:
+  - filename: "example1.jpg"
+    prompt: "a serene landscape with mountains and lake at sunset --sref 12345678"
+  - filename: "example2.jpg"
+    prompt: "portrait of a woman with flowing hair in watercolor style --sref 12345678"
+  - filename: "example3.jpg"
+    prompt: "abstract flowers blooming in spring colors --sref 12345678"

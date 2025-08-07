@@ -1,0 +1,7 @@
+id: "no-images"
+title: "Sref Without Images"
+description: "This sref has no images directory"
+tags:
+  - test
+  - no-images
+cover_image: "nonexistent.jpg"

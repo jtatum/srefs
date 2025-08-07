@@ -1,0 +1,6 @@
+id: "no-cover"
+title: "Sref Without Cover"
+description: "This sref has no cover_image specified"
+tags:
+  - test
+  - auto-cover
