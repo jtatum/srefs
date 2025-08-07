@@ -27,7 +27,7 @@ export async function handleMidjourneyMessage(
       .setLabel('Title')
       .setStyle(TextInputStyle.Short)
       .setRequired(true)
-      .setValue(generateTitleFromPrompt(parsedMessage.prompt))
+      .setPlaceholder('Enter a title for this sref...')
       .setMaxLength(100);
 
     const tagsInput = new TextInputBuilder()
@@ -35,7 +35,7 @@ export async function handleMidjourneyMessage(
       .setLabel('Tags (comma-separated)')
       .setStyle(TextInputStyle.Short)
       .setRequired(true)
-      .setValue(generateTagsFromPrompt(parsedMessage.prompt))
+      .setPlaceholder('architecture, futuristic, cyberpunk')
       .setMaxLength(200);
 
     const descriptionInput = new TextInputBuilder()
@@ -43,7 +43,7 @@ export async function handleMidjourneyMessage(
       .setLabel('Description (optional)')
       .setStyle(TextInputStyle.Paragraph)
       .setRequired(false)
-      .setValue(parsedMessage.prompt)
+      .setPlaceholder('Optional description or notes...')
       .setMaxLength(500);
 
     const firstActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(titleInput);
@@ -93,27 +93,4 @@ export async function handleMidjourneyMessage(
     console.error('Error parsing Midjourney message:', error);
     await interaction.editReply(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
-}
-
-function generateTitleFromPrompt(prompt: string): string {
-  const words = prompt.toLowerCase()
-    .replace(/[^\w\s]/g, ' ')
-    .split(/\s+/)
-    .filter(w => w.length > 2)
-    .slice(0, 3);
-  
-  return words.map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-}
-
-function generateTagsFromPrompt(prompt: string): string {
-  const commonTags = ['futurism', 'cyberpunk', 'architecture', 'piranesi', 'scifi', 'building', 'diagram', 'schematic'];
-  const promptLower = prompt.toLowerCase();
-  
-  const foundTags = commonTags.filter(tag => promptLower.includes(tag));
-  
-  if (foundTags.length === 0) {
-    foundTags.push('midjourney', 'art');
-  }
-  
-  return foundTags.slice(0, 5).join(', ');
 }

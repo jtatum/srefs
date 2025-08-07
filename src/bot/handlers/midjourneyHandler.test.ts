@@ -253,26 +253,4 @@ describe('midjourneyHandler', () => {
     });
   });
 
-  describe('helper functions', () => {
-    it('should test title generation from prompts', async () => {
-      // Import and test the internal functions by testing the behavior through the main function
-      const { parseMidjourneyMessage } = await import('../utils/midjourneyParser.js');
-      
-      vi.mocked(parseMidjourneyMessage).mockReturnValue({
-        prompt: 'futuristic cyberpunk architecture building design',
-        jobId: '12345678-1234-1234-1234-123456789abc',
-        imageUrl: 'https://cdn.discord.com/test.png',
-        imageWidth: 1024,
-        imageHeight: 1024,
-        messageType: 'individual' as const
-      });
-
-      vi.mocked(mockInteraction.awaitModalSubmit).mockRejectedValue(new Error('timeout'));
-
-      await handleMidjourneyMessage(mockMessage as any, mockInteraction as any);
-
-      // Check that modal was shown (which means title generation worked)
-      expect(mockInteraction.showModal).toHaveBeenCalled();
-    });
-  });
 });
