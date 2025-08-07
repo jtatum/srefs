@@ -11,7 +11,7 @@ export async function createSrefFromMessage(
   tags: string[],
   description?: string
 ): Promise<{ srefId: string; srefPath: string }> {
-  const srefId = generateSrefId();
+  const srefId = parsedMessage.srefValue || generateSrefId();
   const srefDirName = `sref-${srefId}`;
   const srefPath = path.join(process.cwd(), 'data', 'srefs', srefDirName);
   const imagesPath = path.join(srefPath, 'images');

@@ -55,20 +55,20 @@ describe('createSrefFromMessage', () => {
       'A beautiful futuristic city design'
     );
 
-    expect(result.srefId).toHaveLength(8); // Should be 8 characters
-    expect(result.srefPath).toMatch(/data\/srefs\/sref-[a-z0-9]{8}$/);
+    expect(result.srefId).toBe('42'); // Should use the sref value from mock
+    expect(result.srefPath).toContain('data/srefs/sref-42');
 
     expect(ensureDirectoryExists).toHaveBeenCalledWith(
-      expect.stringMatching(/data\/srefs\/sref-[a-z0-9]{8}\/images$/)
+      expect.stringContaining('data/srefs/sref-42/images')
     );
 
     expect(downloadImage).toHaveBeenCalledWith(
       'https://cdn.discord.com/test.png',
-      expect.stringMatching(/data\/srefs\/sref-[a-z0-9]{8}\/images\/image\.png$/)
+      expect.stringContaining('data/srefs/sref-42/images/image.png')
     );
 
     expect(mockYaml.dump).toHaveBeenCalledWith({
-      id: expect.stringMatching(/^[a-z0-9]{8}$/),
+      id: '42',
       title: 'Futuristic City',
       description: 'A beautiful futuristic city design',
       tags: ['architecture', 'futuristic', 'city'],
@@ -88,7 +88,7 @@ describe('createSrefFromMessage', () => {
     });
 
     expect(mockFs.writeFile).toHaveBeenCalledWith(
-      expect.stringMatching(/data\/srefs\/sref-[a-z0-9]{8}\/meta\.yaml$/),
+      expect.stringContaining('data/srefs/sref-42/meta.yaml'),
       'mocked-yaml-content',
       'utf-8'
     );
@@ -166,12 +166,13 @@ describe('createSrefFromMessage', () => {
     expect(yamlCall.images[0].aspectRatio).toBe(2);
   });
 
-  it('should generate unique IDs for multiple calls', async () => {
+  it('should generate unique IDs for multiple calls when no sref value', async () => {
     // Clear the mock and restore original Math.random for this test
     vi.mocked(Math.random).mockRestore();
     
-    const result1 = await createSrefFromMessage(mockParsedMessage, 'Title 1', ['test']);
-    const result2 = await createSrefFromMessage(mockParsedMessage, 'Title 2', ['test']);
+    const messageWithoutSref = { ...mockParsedMessage, srefValue: undefined };
+    const result1 = await createSrefFromMessage(messageWithoutSref, 'Title 1', ['test']);
+    const result2 = await createSrefFromMessage(messageWithoutSref, 'Title 2', ['test']);
 
     expect(result1.srefId).toHaveLength(8);
     expect(result2.srefId).toHaveLength(8);
@@ -190,5 +191,40 @@ describe('createSrefFromMessage', () => {
 
     const yamlCall = mockYaml.dump.mock.calls[0][0];
     expect(yamlCall.created).toBe('2024-01-15');
+  });
+
+  it('should use sref value from message when available', async () => {
+    const messageWithSref = {
+      ...mockParsedMessage,
+      srefValue: '123456'
+    };
+
+    const result = await createSrefFromMessage(
+      messageWithSref,
+      'Test Title',
+      ['test']
+    );
+
+    expect(result.srefId).toBe('123456');
+    expect(result.srefPath).toContain('sref-123456');
+
+    const yamlCall = mockYaml.dump.mock.calls[0][0];
+    expect(yamlCall.id).toBe('123456');
+  });
+
+  it('should generate random ID when sref value is not available', async () => {
+    const messageWithoutSref = {
+      ...mockParsedMessage,
+      srefValue: undefined
+    };
+
+    const result = await createSrefFromMessage(
+      messageWithoutSref,
+      'Test Title',
+      ['test']
+    );
+
+    expect(result.srefId).toHaveLength(8);
+    expect(result.srefId).toMatch(/^[a-z0-9]{8}$/);
   });
 });
