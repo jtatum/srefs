@@ -16,15 +16,15 @@ const { title, description = 'A collection of Midjourney style references' } = A
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
   </head>
-  <body class="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/20 to-blue-50/20 relative">
+  <body class="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-blue-50/30 dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20 relative">
     <!-- Background Pattern -->
     <div class="fixed inset-0 opacity-20" style="background: var(--bg-pattern);"></div>
     
-    <header class="relative glass border-b border-white/20 backdrop-blur-xl">
+    <header class="relative glass border-b border-white/20 dark:border-white/10 backdrop-blur-xl">
       <div class="container mx-auto px-4 py-6">
         <nav class="flex items-center justify-between">
           <a href="/" class="group relative">
-            <h1 class="text-3xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
               <span class="relative">
                 Sref Gallery
                 <div class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 group-hover:w-full transition-all duration-300"></div>
@@ -32,11 +32,11 @@ const { title, description = 'A collection of Midjourney style references' } = A
             </h1>
           </a>
           <div class="flex items-center gap-6">
-            <a href="/" class="relative text-gray-700 hover:text-indigo-600 font-medium transition-colors group">
+            <a href="/" class="relative text-gray-800 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors group">
               Browse
               <div class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 group-hover:w-full transition-all duration-300"></div>
             </a>
-            <a href="/about" class="relative text-gray-700 hover:text-indigo-600 font-medium transition-colors group">
+            <a href="/about" class="relative text-gray-800 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors group">
               About
               <div class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 group-hover:w-full transition-all duration-300"></div>
             </a>
@@ -47,15 +47,15 @@ const { title, description = 'A collection of Midjourney style references' } = A
     <main class="relative container mx-auto px-4 py-12">
       <slot />
     </main>
-    <footer class="relative mt-auto glass border-t border-white/20 backdrop-blur-xl">
+    <footer class="relative mt-auto glass border-t border-white/20 dark:border-white/10 backdrop-blur-xl">
       <div class="container mx-auto px-4 py-8">
         <div class="text-center">
-          <p class="text-sm text-gray-600 mb-2">
+          <p class="text-sm text-gray-700 dark:text-gray-300 mb-2">
             <span class="font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
               Midjourney Sref Gallery
             </span>
           </p>
-          <p class="text-xs text-gray-500">
+          <p class="text-xs text-gray-600 dark:text-gray-400">
             A curated collection of style references for creative AI
           </p>
         </div>
