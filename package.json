@@ -8,6 +8,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "bot:dev": "tsx watch src/bot/index.ts",
+    "bot:start": "tsx src/bot/index.ts",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
@@ -21,12 +23,15 @@
     "@types/react-dom": "^19.1.7",
     "@types/sharp": "^0.31.1",
     "astro": "^5.12.8",
+    "discord.js": "^14.21.0",
+    "dotenv": "^17.2.1",
     "fuse.js": "^7.1.0",
     "js-yaml": "^4.1.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "sharp": "^0.34.3",
-    "tailwindcss": "^4.1.11"
+    "tailwindcss": "^4.1.11",
+    "tsx": "^4.20.3"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.1",
