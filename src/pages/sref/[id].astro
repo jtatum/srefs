@@ -107,15 +107,16 @@ if (!sref) {
           
           <div class="relative glass rounded-xl overflow-hidden border border-white/20 group-hover:border-white/40 transition-all duration-300">
             <div 
-              class="overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 relative"
+              class="overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 relative cursor-pointer"
               style={`aspect-ratio: ${image.aspectRatio}`}
+              data-lightbox="gallery"
+              data-index={index}
             >
               <img
                 src={image.url}
                 alt={image.prompt || sref.title}
                 loading="lazy"
-                class="w-full h-full object-cover cursor-pointer group-hover:scale-110 transition-transform duration-700 ease-out"
-                data-lightbox="gallery"
+                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
               />
               
               <!-- Image Overlay -->
@@ -214,25 +215,166 @@ if (!sref) {
     });
   }
 
-  const images = document.querySelectorAll('[data-lightbox="gallery"]');
-  images.forEach(img => {
-    img.addEventListener('click', () => {
-      const modal = document.createElement('div');
-      modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 p-4';
-      modal.innerHTML = `
-        <img src="${(img as HTMLImageElement).src}" alt="${(img as HTMLImageElement).alt}" class="max-w-full max-h-full object-contain" />
-        <button class="absolute top-4 right-4 text-white hover:text-gray-300">
-          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-        </button>
+  function initLightbox() {
+    const images = document.querySelectorAll('[data-lightbox="gallery"]');
+    
+    if (images.length === 0) {
+      setTimeout(initLightbox, 100);
+      return;
+    }
+    
+    let currentImageIndex = 0;
+    let lightboxModal = null;
+    
+    function openLightbox(index) {
+      currentImageIndex = index;
+      const currentContainer = images[currentImageIndex];
+      const currentImg = currentContainer.querySelector('img');
+      
+      lightboxModal = document.createElement('div');
+      lightboxModal.className = 'fixed inset-0 z-50 bg-black bg-opacity-95 flex items-center justify-center p-4';
+      lightboxModal.style.animation = 'fadeIn 0.2s ease-out';
+      
+      lightboxModal.innerHTML = `
+        <style>
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+          }
+          .lightbox-content {
+            animation: slideIn 0.3s ease-out;
+          }
+        </style>
+        <div class="lightbox-content relative max-w-full max-h-full flex items-center justify-center">
+          <img 
+            src="${currentImg.src}" 
+            alt="${currentImg.alt}" 
+            class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
+            style="animation: slideIn 0.3s ease-out;"
+          />
+          
+          <!-- Close Button -->
+          <button class="lightbox-close absolute top-4 right-4 p-2 bg-black/50 backdrop-blur-sm rounded-full text-white hover:text-gray-300 hover:bg-black/70 transition-all duration-200">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+          
+          <!-- Navigation Buttons -->
+          ${images.length > 1 ? `
+            <button class="lightbox-prev absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-black/50 backdrop-blur-sm rounded-full text-white hover:text-gray-300 hover:bg-black/70 transition-all duration-200 ${currentImageIndex === 0 ? 'opacity-50 cursor-not-allowed' : ''}">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+            </button>
+            <button class="lightbox-next absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-black/50 backdrop-blur-sm rounded-full text-white hover:text-gray-300 hover:bg-black/70 transition-all duration-200 ${currentImageIndex === images.length - 1 ? 'opacity-50 cursor-not-allowed' : ''}">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          ` : ''}
+          
+          <!-- Image Counter -->
+          ${images.length > 1 ? `
+            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/50 backdrop-blur-sm rounded-full text-white text-sm font-medium">
+              ${currentImageIndex + 1} / ${images.length}
+            </div>
+          ` : ''}
+        </div>
       `;
       
-      modal.addEventListener('click', () => {
-        modal.remove();
+      // Add event listeners
+      const closeBtn = lightboxModal.querySelector('.lightbox-close');
+      const prevBtn = lightboxModal.querySelector('.lightbox-prev');
+      const nextBtn = lightboxModal.querySelector('.lightbox-next');
+      
+      // Close on click outside image
+      lightboxModal.addEventListener('click', (e) => {
+        if (e.target === lightboxModal) {
+          closeLightbox();
+        }
       });
       
-      document.body.appendChild(modal);
+      // Close button
+      if (closeBtn) {
+        closeBtn.addEventListener('click', closeLightbox);
+      }
+      
+      // Navigation buttons
+      if (prevBtn && currentImageIndex > 0) {
+        prevBtn.addEventListener('click', () => navigateImage(-1));
+      }
+      if (nextBtn && currentImageIndex < images.length - 1) {
+        nextBtn.addEventListener('click', () => navigateImage(1));
+      }
+      
+      // Keyboard navigation
+      document.addEventListener('keydown', handleKeydown);
+      
+      // Prevent body scroll
+      document.body.style.overflow = 'hidden';
+      
+      document.body.appendChild(lightboxModal);
+    }
+    
+    function closeLightbox() {
+      if (lightboxModal) {
+        lightboxModal.style.animation = 'fadeIn 0.2s ease-out reverse';
+        setTimeout(() => {
+          if (lightboxModal) {
+            lightboxModal.remove();
+            lightboxModal = null;
+            document.body.style.overflow = '';
+            document.removeEventListener('keydown', handleKeydown);
+          }
+        }, 200);
+      }
+    }
+    
+    function navigateImage(direction) {
+      const newIndex = currentImageIndex + direction;
+      if (newIndex >= 0 && newIndex < images.length) {
+        closeLightbox();
+        setTimeout(() => openLightbox(newIndex), 250);
+      }
+    }
+    
+    function handleKeydown(e) {
+      switch (e.key) {
+        case 'Escape':
+          closeLightbox();
+          break;
+        case 'ArrowLeft':
+          if (currentImageIndex > 0) navigateImage(-1);
+          break;
+        case 'ArrowRight':
+          if (currentImageIndex < images.length - 1) navigateImage(1);
+          break;
+      }
+    }
+    
+    // Add click listeners to images
+    images.forEach((container) => {
+      const index = parseInt(container.getAttribute('data-index'));
+      container.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openLightbox(index);
+      });
     });
-  });
+  }
+  
+  // Try multiple initialization strategies
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLightbox);
+  } else {
+    initLightbox();
+  }
+  
+  // Also try after a short delay
+  setTimeout(initLightbox, 100);
 </script>
