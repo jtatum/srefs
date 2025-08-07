@@ -13,6 +13,7 @@ A static site for organizing and browsing Midjourney style references (srefs). B
 - 📱 **Responsive Design** - Works on all devices
 - 🚀 **Static Site** - Deploy anywhere that serves HTML
 - 🤖 **Discord Bot** - Add srefs directly from Midjourney messages
+- 🔗 **GitHub Integration** - Edit on GitHub link for easy contribution
 
 ## Quick Start
 
@@ -88,11 +89,12 @@ images:
 
 ```
 /
-├── data/
-│   └── srefs/              # Style reference data
-│       └── sref-[id]/
-│           ├── meta.yaml   # Metadata
-│           └── images/     # Image files
+├── public/
+│   └── data/
+│       └── srefs/          # Style reference data
+│           └── sref-[id]/
+│               ├── meta.yaml   # Metadata
+│               └── images/     # Image files
 ├── src/
 │   ├── bot/               # Discord bot integration
 │   │   ├── commands/      # Context menu commands
@@ -102,6 +104,7 @@ images:
 │   ├── components/        # React and Astro components
 │   ├── layouts/           # Page layouts
 │   └── lib/               # Utilities and data loading
+├── tests/                 # Test files and fixtures
 └── dist/                  # Built static site
 ```
 
