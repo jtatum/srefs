@@ -97,13 +97,31 @@ A Discord bot is included that allows adding Midjourney messages directly to the
 1. Start the bot: `npm run bot:dev`
 2. In Discord, right-click on any Midjourney Bot message
 3. Select "Apps" > "Add to Sref Database"
-4. The bot will analyze the message and log details to the console
+4. Fill out the modal with title, tags, and description
+5. Bot downloads the image and creates the sref structure automatically
+6. A ✅ reaction is added to the original message to mark it as processed
+
+### Supported Message Types
+- **Initial generations** (4-image grids, 2048x2048)
+- **Variations** (Strong/Subtle, 2048x2048)
+- **Upscales** (Individual images, 1024x1024)
+- **Individual selections** (Image #1, #2, etc.)
+- **Messages with --sref parameters** (automatically extracted)
 
 ### Bot Architecture
 - `src/bot/index.ts` - Main bot entry point and command registration
-- `src/bot/commands/` - Context menu command definitions
-- `src/bot/handlers/` - Message processing and sref creation logic
-- `src/bot/utils/` - Shared bot utilities
+- `src/bot/commands/addToSref.ts` - Context menu command definition
+- `src/bot/handlers/midjourneyHandler.ts` - Modal interaction and sref creation
+- `src/bot/utils/midjourneyParser.ts` - Message parsing and data extraction
+- `src/bot/utils/imageDownloader.ts` - Image downloading from Discord CDN
+- `src/bot/utils/srefCreator.ts` - Sref directory and YAML generation
+
+### Error Handling
+- Network failures during image download
+- Invalid Midjourney message formats
+- Missing Discord permissions
+- File system errors during sref creation
+- Modal timeout handling
 
 ## Tech Stack
 - **Astro** - Static site generator with excellent image handling
@@ -119,8 +137,16 @@ A Discord bot is included that allows adding Midjourney messages directly to the
 
 ## Testing
 The project has comprehensive test coverage for critical functionality:
+
+### Site Tests
 - `src/lib/srefs.test.ts` - Data loading and processing tests
 - `src/components/SearchClient.test.tsx` - Search and filtering tests (100% coverage)
 - `tests/integration/build.test.ts` - Build process validation
+
+### Bot Tests (98.41% coverage)
+- `src/bot/utils/midjourneyParser.test.ts` - Message parsing and validation
+- `src/bot/utils/imageDownloader.test.ts` - Image download and file operations
+- `src/bot/utils/srefCreator.test.ts` - Sref creation and YAML generation
+- `src/bot/handlers/midjourneyHandler.test.ts` - Complete workflow integration
 
 Test fixtures are in `tests/fixtures/` with various sref configurations for testing edge cases.
