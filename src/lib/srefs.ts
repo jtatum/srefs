@@ -51,7 +51,7 @@ async function loadSref(dirName: string): Promise<ProcessedSref> {
   if (metadata.images && metadata.images.length > 0) {
     processedImages = await Promise.all(
       metadata.images.map(async (img) => {
-        const imagePath = `/data/srefs/${dirName}/images/${img.filename}`;
+        const imagePath = `${import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/'}data/srefs/${dirName}/images/${img.filename}`;
         const dimensions = await getImageDimensions(path.join(imagesDir, img.filename));
         
         return {
@@ -69,7 +69,7 @@ async function loadSref(dirName: string): Promise<ProcessedSref> {
       imageFiles
         .filter(file => /\.(jpg|jpeg|png|webp|gif)$/i.test(file))
         .map(async (filename) => {
-          const imagePath = `/data/srefs/${dirName}/images/${filename}`;
+          const imagePath = `${import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/'}data/srefs/${dirName}/images/${filename}`;
           const dimensions = await getImageDimensions(path.join(imagesDir, filename));
           
           return {
@@ -87,7 +87,7 @@ async function loadSref(dirName: string): Promise<ProcessedSref> {
   
   return {
     ...metadata,
-    path: `/sref/${metadata.id}`,
+    path: `${import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/'}sref/${metadata.id}`,
     coverImageUrl: coverImage?.url || '',
     processedImages,
   };
