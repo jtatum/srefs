@@ -8,11 +8,30 @@ const searchIndex = buildSearchIndex(srefs);
 ---
 
 <Layout title="Midjourney Sref Gallery">
-  <div class="mb-8">
-    <h1 class="text-4xl font-bold text-gray-900 mb-4">Style Reference Gallery</h1>
-    <p class="text-lg text-gray-600">
-      Browse and search Midjourney style references. Click on any sref to see more examples and copy the code.
-    </p>
+  <!-- Hero Section -->
+  <div class="relative mb-16 text-center">
+    <div class="mb-8">
+      <h1 class="text-5xl md:text-7xl font-bold mb-6">
+        <span class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight block">
+          Style Reference
+        </span>
+        <span class="text-gray-800 block">Gallery</span>
+      </h1>
+      <div class="max-w-2xl mx-auto">
+        <p class="text-xl text-gray-700 leading-relaxed mb-8">
+          Discover, browse, and collect 
+          <span class="font-semibold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            Midjourney style references
+          </span>. 
+          Each sref unlocks unique artistic possibilities for your AI creations.
+        </p>
+      </div>
+    </div>
+    
+    <!-- Decorative Elements -->
+    <div class="absolute top-4 left-4 w-20 h-20 bg-gradient-to-br from-indigo-400/20 to-purple-400/20 rounded-full blur-xl"></div>
+    <div class="absolute top-16 right-8 w-32 h-32 bg-gradient-to-br from-pink-400/20 to-orange-400/20 rounded-full blur-xl"></div>
+    <div class="absolute bottom-8 left-1/3 w-24 h-24 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-full blur-xl"></div>
   </div>
 
   <SearchClient client:load items={searchIndex} />

@@ -149,15 +149,15 @@ describe('SearchClient', () => {
       render(<SearchClient items={mockSearchItems} />);
 
       const watercolorTags = screen.getAllByText('watercolor');
-      const watercolorTag = watercolorTags[0]; // Filter button
+      const watercolorButton = watercolorTags[0].closest('button'); // Get the actual button
       
-      // Click to select
-      await user.click(watercolorTag);
-      expect(watercolorTag).toHaveClass('bg-blue-500');
+      // Click to select - check for text-white (selected state)
+      await user.click(watercolorTags[0]);
+      expect(watercolorButton).toHaveClass('text-white');
 
-      // Click to deselect
-      await user.click(watercolorTag);
-      expect(watercolorTag).not.toHaveClass('bg-blue-500');
+      // Click to deselect - check for text-gray-800 (unselected state)
+      await user.click(watercolorTags[0]);
+      expect(watercolorButton).toHaveClass('text-gray-800');
       
       // All items should be visible again
       await waitFor(() => {
@@ -213,7 +213,7 @@ describe('SearchClient', () => {
       await user.type(searchInput, 'test');
 
       await waitFor(() => {
-        expect(screen.getByText(/clear filters/i)).toBeInTheDocument();
+        expect(screen.getByText(/clear all filters/i)).toBeInTheDocument();
       });
     });
 
@@ -227,16 +227,17 @@ describe('SearchClient', () => {
 
       // Select a tag
       const softTags = screen.getAllByText('soft');
-      const softTag = softTags[0]; // Filter button
+      const softTag = softTags[0]; // Filter button text
+      const softButton = softTag.closest('button'); // Get the actual button
       await user.click(softTag);
 
       // Click clear
-      const clearButton = screen.getByText(/clear filters/i);
+      const clearButton = screen.getByText(/clear all filters/i);
       await user.click(clearButton);
 
       await waitFor(() => {
         expect(searchInput).toHaveValue('');
-        expect(softTag).not.toHaveClass('bg-blue-500');
+        expect(softButton).toHaveClass('text-gray-800');
         expect(screen.getByText('Watercolor Dreams')).toBeInTheDocument();
         expect(screen.getByText('Cyberpunk Neon')).toBeInTheDocument();
         expect(screen.getByText('Abstract Geometry')).toBeInTheDocument();
@@ -264,9 +265,9 @@ describe('SearchClient', () => {
       const copyButtons = screen.getAllByTitle(/copy --sref/i);
       expect(copyButtons).toHaveLength(mockSearchItems.length);
       
-      // Copy buttons should be present but hidden initially
+      // Copy buttons should be present (they're now floating buttons in cards)
       copyButtons.forEach(button => {
-        expect(button).toHaveClass('opacity-0');
+        expect(button).toBeInTheDocument();
       });
     });
 
@@ -352,6 +353,38 @@ describe('SearchClient', () => {
 
       const links = screen.getAllByRole('link');
       expect(links[0]).toHaveAttribute('href', '/sref/12345678');
+    });
+
+    it('should show "+X more" for items with many tags', () => {
+      const itemWithManyTags = [{
+        id: '99999999',
+        title: 'Many Tags Item',
+        description: 'Item with many tags',
+        tags: ['unique1', 'unique2', 'unique3', 'unique4', 'unique5', 'unique6'],
+        searchText: 'many tags item',
+        coverImageUrl: '/test.jpg',
+        path: '/sref/99999999',
+      }];
+
+      render(<SearchClient items={itemWithManyTags} />);
+      
+      // Should show "+3 more" for remaining tags (this exercises the uncovered lines 231-233)
+      expect(screen.getByText('+3 more')).toBeInTheDocument();
+      
+      // Should show all 6 tags in the filter section
+      const allUnique1Tags = screen.getAllByText('unique1');
+      const allUnique2Tags = screen.getAllByText('unique2');
+      const allUnique3Tags = screen.getAllByText('unique3');
+      
+      // Each tag should appear twice: once in filter, once in card
+      expect(allUnique1Tags).toHaveLength(2);
+      expect(allUnique2Tags).toHaveLength(2);
+      expect(allUnique3Tags).toHaveLength(2);
+      
+      // Tags 4, 5, 6 should only appear in filter section (not in card)
+      expect(screen.getAllByText('unique4')).toHaveLength(1); // Only in filter
+      expect(screen.getAllByText('unique5')).toHaveLength(1); // Only in filter
+      expect(screen.getAllByText('unique6')).toHaveLength(1); // Only in filter
     });
   });
 });
