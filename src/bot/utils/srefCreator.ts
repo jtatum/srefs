@@ -13,7 +13,7 @@ export async function createSrefFromMessage(
 ): Promise<{ srefId: string; srefPath: string }> {
   const srefId = parsedMessage.srefValue || generateSrefId();
   const srefDirName = `sref-${srefId}`;
-  const srefPath = path.join(process.cwd(), 'data', 'srefs', srefDirName);
+  const srefPath = path.join(process.cwd(), 'public', 'data', 'srefs', srefDirName);
   const imagesPath = path.join(srefPath, 'images');
 
   await ensureDirectoryExists(imagesPath);

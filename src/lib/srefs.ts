@@ -4,7 +4,7 @@ import yaml from 'js-yaml';
 import type { SrefMetadata, ProcessedSref, ProcessedImage } from './types';
 import { getImage } from 'astro:assets';
 
-const DATA_DIR = path.join(process.cwd(), 'data', 'srefs');
+const DATA_DIR = path.join(process.cwd(), 'public', 'data', 'srefs');
 
 export async function getAllSrefs(): Promise<ProcessedSref[]> {
   try {

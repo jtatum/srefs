@@ -26,9 +26,9 @@ npm run bot:start     # Start bot in production mode
 ## Architecture
 
 ### Data Storage System
-All sref data lives in `data/srefs/` with this structure:
+All sref data lives in `public/data/srefs/` with this structure:
 ```
-data/srefs/
+public/data/srefs/
 └── sref-[id]/
     ├── meta.yaml    # Metadata file (required)
     └── images/      # Image files (jpg, png, webp, gif)
@@ -49,7 +49,7 @@ images:                       # Optional, auto-discovered if omitted
 
 ### Build-Time Processing
 - `src/lib/srefs.ts`: Data loader that reads YAML files and automatically extracts image dimensions using Sharp
-- Images are served directly from `data/srefs/` directories (no copying/processing)
+- Images are served directly from `public/data/srefs/` directories via `/data/srefs/` URLs
 - Search index is generated at build time from all srefs
 
 ### Key Components
@@ -66,7 +66,7 @@ Client-side search using Fuse.js with:
 
 ## Adding New Srefs
 
-1. Create directory: `data/srefs/sref-[your-id]/`
+1. Create directory: `public/data/srefs/sref-[your-id]/`
 2. Add `meta.yaml` with at minimum:
    ```yaml
    id: "your-id"
@@ -74,7 +74,7 @@ Client-side search using Fuse.js with:
    tags: [tag1, tag2]
    cover_image: "cover.jpg"
    ```
-3. Add images to `data/srefs/sref-[your-id]/images/`
+3. Add images to `public/data/srefs/sref-[your-id]/images/`
 4. Run `npm run build` to regenerate the site
 
 ## Discord Bot Integration

@@ -56,15 +56,15 @@ describe('createSrefFromMessage', () => {
     );
 
     expect(result.srefId).toBe('42'); // Should use the sref value from mock
-    expect(result.srefPath).toContain('data/srefs/sref-42');
+    expect(result.srefPath).toContain('public/data/srefs/sref-42');
 
     expect(ensureDirectoryExists).toHaveBeenCalledWith(
-      expect.stringContaining('data/srefs/sref-42/images')
+      expect.stringContaining('public/data/srefs/sref-42/images')
     );
 
     expect(downloadImage).toHaveBeenCalledWith(
       'https://cdn.discord.com/test.png',
-      expect.stringContaining('data/srefs/sref-42/images/image.png')
+      expect.stringContaining('public/data/srefs/sref-42/images/image.png')
     );
 
     expect(mockYaml.dump).toHaveBeenCalledWith({
@@ -88,7 +88,7 @@ describe('createSrefFromMessage', () => {
     });
 
     expect(mockFs.writeFile).toHaveBeenCalledWith(
-      expect.stringContaining('data/srefs/sref-42/meta.yaml'),
+      expect.stringContaining('public/data/srefs/sref-42/meta.yaml'),
       'mocked-yaml-content',
       'utf-8'
     );

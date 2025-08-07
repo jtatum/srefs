@@ -92,7 +92,7 @@ describe('midjourneyHandler', () => {
       // Mock successful sref creation
       vi.mocked(createSrefFromMessage).mockResolvedValue({
         srefId: 'abc12345',
-        srefPath: '/data/srefs/sref-abc12345'
+        srefPath: '/public/data/srefs/sref-abc12345'
       });
 
       await handleMidjourneyMessage(mockMessage as any, mockInteraction as any);
@@ -133,7 +133,7 @@ describe('midjourneyHandler', () => {
 
       vi.mocked(createSrefFromMessage).mockResolvedValue({
         srefId: 'test123',
-        srefPath: '/data/srefs/sref-test123'
+        srefPath: '/public/data/srefs/sref-test123'
       });
 
       await handleMidjourneyMessage(mockMessage as any, mockInteraction as any);
@@ -236,7 +236,7 @@ describe('midjourneyHandler', () => {
 
       vi.mocked(createSrefFromMessage).mockResolvedValue({
         srefId: 'test123',
-        srefPath: '/data/srefs/sref-test123'
+        srefPath: '/public/data/srefs/sref-test123'
       });
 
       // Mock reaction failure

@@ -40,7 +40,7 @@ npm run build
 
 ### Option 2: Manual
 
-1. Create a new directory in `data/srefs/` named `sref-[id]`
+1. Create a new directory in `public/data/srefs/` named `sref-[id]`
 2. Add a `meta.yaml` file:
 
 ```yaml
@@ -56,7 +56,7 @@ images:
     prompt: "example prompt --sref 12345678"
 ```
 
-3. Add images to `data/srefs/sref-[id]/images/`
+3. Add images to `public/data/srefs/sref-[id]/images/`
 4. Build the site: `npm run build`
 
 ## Discord Bot Setup
