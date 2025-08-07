@@ -141,10 +141,26 @@ npm test src/bot      # Run only bot tests
 
 ## Deployment
 
-The built site in `dist/` is completely static and can be deployed to:
+### Automated GitHub Pages Deployment (Recommended)
+
+The repository includes automated CI/CD via GitHub Actions:
+
+1. **Automatic Testing**: Every push/PR runs full test suite
+2. **Automatic Building**: Successful tests trigger Astro build
+3. **Automatic Deployment**: Built site deploys to GitHub Pages
+
+**Setup GitHub Pages:**
+1. Go to repository Settings → Pages
+2. Set Source to "GitHub Actions"
+3. Push to `main` branch to trigger deployment
+
+**Live Site:** `https://jtatum.github.io/srefs`
+
+### Manual Deployment
+
+The built site in `dist/` can also be manually deployed to:
 - Netlify (drag & drop the dist folder)
 - Vercel
-- GitHub Pages
 - Any static hosting service
 
 ## Tech Stack
