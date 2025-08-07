@@ -1,0 +1,15 @@
+id: "1887219076"
+title: Red and purple plastic
+tags:
+  - red
+  - purple
+  - sculpture
+  - shiny
+cover_image: image.png
+created: "2025-08-07"
+images:
+  - filename: image.png
+    prompt: spider SpongeBob hybrid
+    width: 2048
+    height: 2048
+    aspectRatio: 1

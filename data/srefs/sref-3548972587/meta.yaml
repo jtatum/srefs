@@ -1,0 +1,17 @@
+id: "3548972587"
+title: Purple people eater
+tags:
+  - purple
+  - green
+  - monster
+  - surreal
+  - scary
+  - illustration
+cover_image: image.png
+created: "2025-08-07"
+images:
+  - filename: image.png
+    prompt: spider SpongeBob hybrid
+    width: 2048
+    height: 2048
+    aspectRatio: 1

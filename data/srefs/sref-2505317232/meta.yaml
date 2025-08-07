@@ -1,0 +1,14 @@
+id: "2505317232"
+title: Wooden artifacts
+tags:
+  - sculpture
+  - wood
+  - ancient
+cover_image: image.png
+created: "2025-08-07"
+images:
+  - filename: image.png
+    prompt: three puppies
+    width: 2048
+    height: 2048
+    aspectRatio: 1

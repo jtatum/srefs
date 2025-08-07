@@ -1,0 +1,16 @@
+id: "42"
+title: Pink and purple aurora
+tags:
+  - surreal
+  - photo
+  - pink
+  - purple
+  - glow
+cover_image: image.png
+created: "2025-08-07"
+images:
+  - filename: image.png
+    prompt: glowing underwater photo of a school of colorful jellyfish with tendrils
+    width: 2048
+    height: 2048
+    aspectRatio: 1

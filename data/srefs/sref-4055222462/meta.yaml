@@ -1,0 +1,18 @@
+id: "4055222462"
+title: Simple blue and white
+tags:
+  - blue
+  - white
+  - illustration
+  - flat
+  - monochrome
+cover_image: image.png
+created: "2025-08-07"
+images:
+  - filename: image.png
+    prompt: >-
+      a mermaid swimming with a school of colorful jellyfish with tendrils,
+      underwater photo
+    width: 2048
+    height: 2048
+    aspectRatio: 1

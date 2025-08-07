@@ -1,0 +1,18 @@
+id: "48"
+title: Nouveau texture
+tags:
+  - illustration
+  - flat
+  - surreal
+  - psychadelic
+  - stippling
+cover_image: image.png
+created: "2025-08-07"
+images:
+  - filename: image.png
+    prompt: >-
+      a mermaid swimming with a school of colorful jellyfish with tendrils,
+      underwater photo
+    width: 2048
+    height: 2048
+    aspectRatio: 1

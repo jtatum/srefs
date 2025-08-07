@@ -1,0 +1,15 @@
+id: "2067381016"
+title: The matrix
+tags:
+  - monochrome
+  - cyberpunk
+  - green
+  - digital
+cover_image: image.png
+created: "2025-08-07"
+images:
+  - filename: image.png
+    prompt: giovanni battista piranesi building
+    width: 2048
+    height: 2048
+    aspectRatio: 1

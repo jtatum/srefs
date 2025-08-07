@@ -1,0 +1,16 @@
+id: "50"
+title: Blocky oil
+tags:
+  - painting
+  - oil
+  - brush strokes
+cover_image: image.png
+created: "2025-08-07"
+images:
+  - filename: image.png
+    prompt: >-
+      a mermaid swimming with a school of colorful jellyfish with tendrils,
+      underwater photo
+    width: 2048
+    height: 2048
+    aspectRatio: 1
