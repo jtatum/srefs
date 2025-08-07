@@ -155,9 +155,9 @@ describe('SearchClient', () => {
       await user.click(watercolorTags[0]);
       expect(watercolorButton).toHaveClass('text-white');
 
-      // Click to deselect - check for text-gray-800 (unselected state)
+      // Click to deselect - check for text-gray-700 (unselected state)
       await user.click(watercolorTags[0]);
-      expect(watercolorButton).toHaveClass('text-gray-800');
+      expect(watercolorButton).toHaveClass('text-gray-700');
       
       // All items should be visible again
       await waitFor(() => {
@@ -237,7 +237,7 @@ describe('SearchClient', () => {
 
       await waitFor(() => {
         expect(searchInput).toHaveValue('');
-        expect(softButton).toHaveClass('text-gray-800');
+        expect(softButton).toHaveClass('text-gray-700');
         expect(screen.getByText('Watercolor Dreams')).toBeInTheDocument();
         expect(screen.getByText('Cyberpunk Neon')).toBeInTheDocument();
         expect(screen.getByText('Abstract Geometry')).toBeInTheDocument();
