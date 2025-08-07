@@ -21,28 +21,32 @@ if (!sref) {
 <Layout title={`${sref.title} - Sref ${sref.id}`} description={sref.description}>
   <div class="max-w-7xl mx-auto">
     <div class="mb-8">
-      <div class="flex items-start justify-between mb-4">
-        <div>
-          <h1 class="text-4xl font-bold text-gray-900 mb-2">{sref.title}</h1>
-          {sref.description && (
-            <p class="text-lg text-gray-600">{sref.description}</p>
-          )}
+      <div class="mb-4">
+        <div class="flex items-start justify-between mb-4">
+          <div>
+            <h1 class="text-4xl font-bold text-gray-900 mb-2">{sref.title}</h1>
+            {sref.description && (
+              <p class="text-lg text-gray-600">{sref.description}</p>
+            )}
+          </div>
+          <div class="flex items-center gap-2">
+            <code class="text-sm font-mono bg-gray-100 px-3 py-2 rounded">
+              --sref {sref.id}
+            </code>
+          </div>
         </div>
-        <div class="flex items-center gap-2">
-          <code class="text-sm font-mono bg-gray-100 px-3 py-2 rounded flex items-center gap-2">
-            --sref {sref.id}
-            <button
-              id="copy-btn"
-              data-sref={sref.id}
-              class="p-1 hover:bg-gray-200 rounded transition-colors"
-              title="Copy to clipboard"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-              </svg>
-            </button>
-          </code>
-        </div>
+        
+        <button
+          id="copy-btn"
+          data-sref={sref.id}
+          class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          title="Copy --sref command to clipboard"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+          </svg>
+          Copy --sref {sref.id}
+        </button>
       </div>
       
       {sref.tags.length > 0 && (
@@ -102,20 +106,22 @@ if (!sref) {
   if (copyBtn) {
     copyBtn.addEventListener('click', async () => {
       const srefId = copyBtn.dataset.sref;
-      const textToCopy = `--sref ${srefId}`;
+      const textToCopy = ` --sref ${srefId}`;
       
       try {
         await navigator.clipboard.writeText(textToCopy);
         copyBtn.innerHTML = `
-          <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
           </svg>
+          Copied!
         `;
         setTimeout(() => {
           copyBtn.innerHTML = `
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
             </svg>
+            Copy --sref ${srefId}
           `;
         }, 2000);
       } catch (err) {

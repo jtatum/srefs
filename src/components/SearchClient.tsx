@@ -52,6 +52,21 @@ export default function SearchClient({ items }: SearchClientProps) {
     );
   };
 
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const handleCopyClick = async (e: React.MouseEvent, id: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    try {
+      await navigator.clipboard.writeText(` --sref ${id}`);
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
+
   return (
     <div>
       <div className="space-y-4 mb-8">
@@ -129,9 +144,26 @@ export default function SearchClient({ items }: SearchClientProps) {
                     <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
                       {item.title}
                     </h3>
-                    <code className="text-xs text-gray-500 font-mono bg-gray-100 px-2 py-1 rounded">
-                      {item.id}
-                    </code>
+                    <div className="flex items-center gap-1">
+                      <code className="text-xs text-gray-500 font-mono bg-gray-100 px-2 py-1 rounded">
+                        {item.id}
+                      </code>
+                      <button
+                        onClick={(e) => handleCopyClick(e, item.id)}
+                        className="p-1 text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                        title={`Copy --sref ${item.id}`}
+                      >
+                        {copiedId === item.id ? (
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                        ) : (
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
                   </div>
                   {item.description && (
                     <p className="text-sm text-gray-600 mb-3 line-clamp-2">

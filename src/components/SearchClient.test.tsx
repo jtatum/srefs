@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import SearchClient from './SearchClient';
@@ -241,6 +241,86 @@ describe('SearchClient', () => {
         expect(screen.getByText('Cyberpunk Neon')).toBeInTheDocument();
         expect(screen.getByText('Abstract Geometry')).toBeInTheDocument();
       });
+    });
+  });
+
+  describe('Copy functionality', () => {
+    const mockWriteText = vi.fn();
+
+    beforeEach(() => {
+      // Mock clipboard API
+      Object.defineProperty(navigator, 'clipboard', {
+        value: {
+          writeText: mockWriteText,
+        },
+        writable: true,
+      });
+      mockWriteText.mockClear();
+    });
+
+    it('should show copy buttons on hover', () => {
+      render(<SearchClient items={mockSearchItems} />);
+
+      const copyButtons = screen.getAllByTitle(/copy --sref/i);
+      expect(copyButtons).toHaveLength(mockSearchItems.length);
+      
+      // Copy buttons should be present but hidden initially
+      copyButtons.forEach(button => {
+        expect(button).toHaveClass('opacity-0');
+      });
+    });
+
+    it('should copy sref command to clipboard with leading space', async () => {
+      mockWriteText.mockResolvedValue(undefined);
+      
+      render(<SearchClient items={mockSearchItems} />);
+
+      const copyButton = screen.getByTitle('Copy --sref 12345678');
+      
+      // Fire the click event directly
+      copyButton.click();
+
+      await waitFor(() => {
+        expect(mockWriteText).toHaveBeenCalledWith(' --sref 12345678');
+        expect(mockWriteText).toHaveBeenCalledTimes(1);
+        
+        // Verify the exact string includes leading space
+        const calledWith = mockWriteText.mock.calls[0][0];
+        expect(calledWith).toBe(' --sref 12345678');
+        expect(calledWith.startsWith(' ')).toBe(true);
+        expect(calledWith.length).toBe(16); // " --sref 12345678" = 16 chars
+      });
+    });
+
+    it('should show success feedback after copying', async () => {
+      mockWriteText.mockResolvedValue(undefined);
+      
+      render(<SearchClient items={mockSearchItems} />);
+
+      const copyButton = screen.getByTitle('Copy --sref 12345678');
+      copyButton.click();
+
+      await waitFor(() => {
+        // Check that the checkmark icon is shown (success feedback)
+        const successIcon = copyButton.querySelector('path[d="M5 13l4 4L19 7"]');
+        expect(successIcon).toBeInTheDocument();
+      });
+    });
+
+    it('should handle clipboard write failures gracefully', async () => {
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      mockWriteText.mockRejectedValue(new Error('Clipboard write failed'));
+      
+      render(<SearchClient items={mockSearchItems} />);
+
+      const copyButton = screen.getByTitle('Copy --sref 12345678');
+      copyButton.click();
+
+      await waitFor(() => {
+        expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to copy:', expect.any(Error));
+      });
+      
+      consoleErrorSpy.mockRestore();
     });
   });
 
