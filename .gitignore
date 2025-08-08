@@ -24,3 +24,6 @@ coverage/
 
 # jetbrains setting folder
 .idea/
+
+# claude local settings
+.claude/
