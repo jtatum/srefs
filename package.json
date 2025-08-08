@@ -21,7 +21,6 @@
     "@types/js-yaml": "^4.0.9",
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
-    "@types/sharp": "^0.31.1",
     "astro": "^5.12.8",
     "discord.js": "^14.21.0",
     "dotenv": "^17.2.1",
