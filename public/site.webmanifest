@@ -1,6 +1,7 @@
 {
   "name": "Sref Gallery",
   "short_name": "Sref Gallery",
+  "start_url": "/",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
@@ -14,6 +15,6 @@
     }
   ],
   "theme_color": "#6366f1",
-  "background_color": "#ffffff",
+  "background_color": "#f8fafc",
   "display": "standalone"
 }
