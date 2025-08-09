@@ -18,6 +18,10 @@ npm run test:watch    # Run tests in watch mode
 npm run test:ui       # Run tests with UI
 npm run test:coverage # Run tests with coverage report
 
+# E2E testing commands
+npm run test:e2e      # Run Playwright E2E tests
+npm run test:e2e:ui   # Run Playwright E2E tests with UI
+
 # Discord bot commands
 npm run bot:dev       # Start bot in development mode (with file watching)
 npm run bot:start     # Start bot in production mode
@@ -134,11 +138,12 @@ A Discord bot is included that allows adding Midjourney messages directly to the
 - **tsx** - TypeScript execution for bot development
 - **Vitest** - Testing framework configured with Astro
 - **Testing Library** - React component testing
+- **Playwright** - E2E testing framework for browser automation
 
 ## Testing
 The project has comprehensive test coverage for critical functionality:
 
-### Site Tests
+### Unit Tests (Vitest)
 - `src/lib/srefs.test.ts` - Data loading and processing tests
 - `src/components/SearchClient.test.tsx` - Search and filtering tests (100% coverage)
 - `tests/integration/build.test.ts` - Build process validation
@@ -148,5 +153,9 @@ The project has comprehensive test coverage for critical functionality:
 - `src/bot/utils/imageDownloader.test.ts` - Image download and file operations
 - `src/bot/utils/srefCreator.test.ts` - Sref creation and YAML generation
 - `src/bot/handlers/midjourneyHandler.test.ts` - Complete workflow integration
+
+### E2E Tests (Playwright)
+- `e2e/explore-before.spec.ts` - Gallery exploration behavior tests
+- `e2e/explore-hover.spec.ts` - Hover interaction tests
 
 Test fixtures are in `tests/fixtures/` with various sref configurations for testing edge cases.
