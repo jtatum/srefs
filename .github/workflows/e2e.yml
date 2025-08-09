@@ -4,8 +4,9 @@ on:
   push:
     branches:
       - main
-      - feat/**
   pull_request:
+    branches:
+      - main
 
 jobs:
   e2e:
@@ -27,7 +28,21 @@ jobs:
       - name: Install deps
         run: npm ci
 
-      - name: Install Playwright (browsers + deps)
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+
+      - name: Cache system dependencies
+        uses: actions/cache@v4
+        id: playwright-deps-cache
+        with:
+          path: /var/cache/apt
+          key: ${{ runner.os }}-playwright-deps-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Playwright browsers and deps
         run: npx playwright install --with-deps
 
       - name: Build site
