@@ -60,6 +60,7 @@ export default function Search({ items, onResults }: SearchProps) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search srefs by title, ID, or description..."
+          aria-label="Search srefs by title, ID, or description"
           className="w-full px-4 py-2 pr-10 text-gray-900 bg-white/90 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-white/10 dark:text-gray-100 dark:placeholder-gray-400 dark:border-white/10"
         />
         <svg

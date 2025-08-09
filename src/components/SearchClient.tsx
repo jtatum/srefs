@@ -79,6 +79,7 @@ export default function SearchClient({ items }: SearchClientProps) {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search srefs by title, ID, or description..."
+              aria-label="Search srefs by title, ID, or description"
               className="w-full px-6 py-4 bg-white/80 text-gray-900 placeholder-gray-600 text-lg rounded-lg focus:outline-none focus:bg-white border-0 dark:bg-white/10 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:bg-white/10"
             />
             <div className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg shadow-lg dark:from-indigo-400/80 dark:to-purple-400/80">

@@ -27,8 +27,8 @@ jobs:
       - name: Install deps
         run: npm ci
 
-      - name: Install Playwright Browsers
-        uses: microsoft/playwright-github-action@v1
+      - name: Install Playwright (browsers + deps)
+        run: npx playwright install --with-deps
 
       - name: Build site
         run: npm run build
@@ -43,4 +43,3 @@ jobs:
           name: playwright-report
           path: playwright-report
           retention-days: 7
-
