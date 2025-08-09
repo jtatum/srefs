@@ -2,7 +2,7 @@
 
 A static site for organizing and browsing Midjourney style references (srefs). Built with Astro, featuring filesystem-based storage for easy Git management and instant client-side search.
 
-## 🚀 **[→ Browse the Live Gallery ←](https://jtatum.github.io/srefs)**
+## 🚀 **[→ Browse the Live Gallery ←](https://srefdb.com)**
 
 **🤖 Now with Discord Bot Integration!** Add Midjourney images directly from Discord via context menu commands.
 
