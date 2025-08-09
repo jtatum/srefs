@@ -72,16 +72,16 @@ export default function SearchClient({ items }: SearchClientProps) {
       {/* Enhanced Search Interface */}
       <div className="relative max-w-2xl mx-auto">
         <div className="relative group">
-          <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-xl blur-xl group-hover:blur-2xl transition-all duration-300 dark:opacity-60"></div>
           <div className="relative glass rounded-xl p-1">
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search srefs by title, ID, or description..."
-              className="w-full px-6 py-4 bg-white/80 text-gray-900 placeholder-gray-600 text-lg rounded-lg focus:outline-none focus:bg-white border-0"
+              className="w-full px-6 py-4 bg-white/80 text-gray-900 placeholder-gray-600 text-lg rounded-lg focus:outline-none focus:bg-white border-0 dark:bg-white/10 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:bg-white/10"
             />
-            <div className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg shadow-lg">
+            <div className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg shadow-lg dark:from-indigo-400/80 dark:to-purple-400/80">
               <svg
                 className="w-5 h-5 text-white"
                 fill="none"
@@ -103,7 +103,7 @@ export default function SearchClient({ items }: SearchClientProps) {
       {/* Enhanced Tag Filters */}
       <div className="space-y-6">{allTags.length > 0 && (
         <div className="text-center">
-          <h3 className="text-lg font-semibold text-gray-700 mb-4">Filter by Style</h3>
+          <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Filter by Style</h3>
           <div className="flex flex-wrap justify-center gap-3">
             {allTags.map(tag => (
               <button
@@ -112,7 +112,7 @@ export default function SearchClient({ items }: SearchClientProps) {
                 className={`relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 transform hover:scale-105 ${
                   selectedTags.includes(tag)
                     ? 'text-white shadow-lg'
-                    : 'text-gray-700 bg-white/60 border border-gray-200/60 hover:shadow-md hover:bg-white/80'
+                    : 'text-gray-700 dark:text-gray-200 bg-white/60 dark:bg-white/5 border border-gray-200/60 dark:border-white/10 hover:shadow-md hover:bg-white/80 dark:hover:bg-white/10'
                 }`}
                 style={{
                   background: selectedTags.includes(tag) 
@@ -200,20 +200,20 @@ export default function SearchClient({ items }: SearchClientProps) {
                     </div>
                   </div>
                   
-                  <div className="p-6 bg-white/95">
+                  <div className="p-6 bg-white/95 dark:bg-slate-900/40">
                     <div className="flex items-start justify-between gap-3 mb-3">
-                      <h3 className="text-lg font-bold text-slate-900 group-hover:text-indigo-600 transition-colors duration-200 leading-tight">
+                      <h3 className="text-lg font-bold text-slate-900 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200 leading-tight">
                         {item.title}
                       </h3>
                       <div className="flex-shrink-0">
-                        <code className="text-xs font-mono bg-indigo-50 text-indigo-800 px-3 py-1.5 rounded-full border border-indigo-200">
+                        <code className="text-xs font-mono bg-indigo-50 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-200/90 px-3 py-1.5 rounded-full border border-indigo-200 dark:border-indigo-800/60">
                           {item.id}
                         </code>
                       </div>
                     </div>
                     
                     {item.description && (
-                      <p className="text-sm text-slate-700 mb-4 leading-relaxed line-clamp-2">
+                      <p className="text-sm text-slate-700 dark:text-slate-400 mb-4 leading-relaxed line-clamp-2">
                         {item.description}
                       </p>
                     )}
@@ -222,13 +222,13 @@ export default function SearchClient({ items }: SearchClientProps) {
                       {item.tags.slice(0, 3).map((tag) => (
                         <span 
                           key={tag} 
-                          className="inline-block px-3 py-1 text-xs font-medium text-slate-700 bg-slate-50 border border-slate-300 rounded-full hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-600 transition-all duration-200 cursor-pointer"
+                          className="chip hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-700 dark:hover:bg-indigo-900/20 dark:hover:border-indigo-800/60 dark:hover:text-indigo-300 transition-all duration-200 cursor-pointer"
                         >
                           {tag}
                         </span>
                       ))}
                       {item.tags.length > 3 && (
-                        <span className="inline-block px-3 py-1 text-xs font-medium text-slate-600 bg-slate-50 border border-slate-300 rounded-full">
+                        <span className="chip">
                           +{item.tags.length - 3} more
                         </span>
                       )}

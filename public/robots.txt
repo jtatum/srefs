@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://srefdb.com/sitemap-index.xml

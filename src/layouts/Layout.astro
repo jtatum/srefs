@@ -2,55 +2,62 @@
 export interface Props {
   title: string;
   description?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
 }
 
-const { title, description = 'A collection of Midjourney style references' } = Astro.props;
+const { title, description = 'A collection of Midjourney style references', ogTitle, ogDescription, ogImage } = Astro.props;
+const pageUrl = Astro.url?.href ?? '';
+const site = Astro.site?.toString() ?? '';
+const canonical = pageUrl || site;
+const defaultOgImage = new URL('og.png', Astro.site ?? Astro.url).toString();
+const metaOgTitle = ogTitle ?? title;
+const metaOgDescription = ogDescription ?? description;
+const metaOgImage = ogImage ?? defaultOgImage;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="antialiased">
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="icon" type="image/svg+xml" href={import.meta.env.BASE_URL + 'favicon.svg'} />
     <title>{title}</title>
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Sref Gallery" />
+    <meta property="og:title" content={metaOgTitle} />
+    <meta property="og:description" content={metaOgDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={metaOgImage} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={metaOgTitle} />
+    <meta name="twitter:description" content={metaOgDescription} />
+    <meta name="twitter:image" content={metaOgImage} />
   </head>
-  <body class="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-blue-50/30 dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20 relative">
+  <body class="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-blue-50/30 dark:from-gray-950 dark:via-indigo-950/30 dark:to-slate-950/30 relative selection:bg-indigo-200/60 selection:text-slate-900">
     <!-- Background Pattern -->
     <div class="fixed inset-0 opacity-20" style="background: var(--bg-pattern);"></div>
     
-    <header class="relative glass border-b border-white/20 dark:border-white/10 backdrop-blur-xl">
-      <div class="container mx-auto px-4 py-6">
+    <header class="relative glass border-b border-white/20 dark:border-white/10 backdrop-blur-xl/2">
+      <div class="container mx-auto px-4 py-4">
         <nav class="flex items-center justify-between">
-          <a href={import.meta.env.BASE_URL} class="group relative">
-            <h1 class="text-3xl font-bold">
-              <span class="relative bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Sref Gallery
-                <div class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 group-hover:w-full transition-all duration-300"></div>
-              </span>
+          <a href={import.meta.env.BASE_URL} class="group relative inline-flex items-center gap-2">
+            <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 shadow-[0_0_0_3px_rgba(255,255,255,0.6)] dark:shadow-[0_0_0_3px_rgba(0,0,0,0.4)]"></div>
+            <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">
+              <span class="relative bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Sref Gallery</span>
             </h1>
           </a>
-          <div class="flex items-center gap-6">
-            <a href={import.meta.env.BASE_URL} class="relative text-gray-800 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors group">
-              Browse
-              <div class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 group-hover:w-full transition-all duration-300"></div>
-            </a>
-            <a href={import.meta.env.BASE_URL + 'about'} class="relative text-gray-800 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors group">
-              About
-              <div class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 group-hover:w-full transition-all duration-300"></div>
-            </a>
-            <a 
-              href="https://github.com/jtatum/srefs" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              class="relative text-gray-800 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors group inline-flex items-center gap-1.5"
-            >
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clip-rule="evenodd"></path>
-              </svg>
-              <span>Edit on GitHub</span>
-              <div class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 group-hover:w-full transition-all duration-300"></div>
+          <div class="flex items-center gap-2 sm:gap-4">
+            <a href={import.meta.env.BASE_URL} class="nav-link">Browse</a>
+            <a href={import.meta.env.BASE_URL + 'about'} class="nav-link">About</a>
+            <a href="https://github.com/jtatum/srefs" target="_blank" rel="noopener noreferrer" class="nav-link inline-flex items-center gap-1.5">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clip-rule="evenodd"></path></svg>
+              <span>GitHub</span>
             </a>
           </div>
         </nav>
@@ -78,4 +85,47 @@ const { title, description = 'A collection of Midjourney style references' } = A
 
 <style is:global>
   @import '../styles/global.css';
+  .nav-link {
+    position: relative;
+    color: rgb(31 41 55);
+    transition: color 150ms;
+    font-weight: 600;
+    letter-spacing: .01em;
+  }
+  @media (prefers-color-scheme: dark) {
+    .nav-link { color: rgba(255,255,255,0.86); text-shadow: 0 1px 2px rgba(0,0,0,.55); }
+  }
+  /* Keep text color stable on hover; rely on rainbow underline */
+  .nav-link:hover { color: inherit; }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: -4px;
+    height: 2px; width: 0;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7, #ec4899);
+    transition: width .25s ease;
+  }
+  .nav-link:hover::after { width: 100%; }
+
+  /* Prevent layout shift when dark mode toggles */
+  html { color-scheme: light dark; }
+
+  /* Tweak container width */
+  .container { max-width: 110rem; }
 </style>
+
+<script>
+  // Mark active nav link for a11y
+  (function(){
+    try {
+      const links = document.querySelectorAll('header nav a[href]');
+      const current = window.location.pathname.replace(/\/$/, '') || '/';
+      links.forEach((a) => {
+        const hrefPath = new URL((a as HTMLAnchorElement).href, window.location.origin).pathname.replace(/\/$/, '') || '/';
+        if (hrefPath === current) {
+          (a as HTMLElement).setAttribute('aria-current', 'page');
+        }
+      });
+    } catch {}
+  })();
+  </script>
