@@ -11,20 +11,24 @@ const searchIndex = buildSearchIndex(srefs);
   <!-- Hero Section -->
   <div class="relative mb-16 text-center">
     <div class="mb-8">
-      <h1 class="text-5xl md:text-7xl font-bold mb-6">
-        <span class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight block">
-          Style Reference
-        </span>
-        <span class="text-gray-800 block">Gallery</span>
-      </h1>
+      <div class="relative inline-block">
+        <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-[1.05] tracking-tight">
+          <span class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 dark:from-indigo-300 dark:via-purple-300 dark:to-pink-300 bg-clip-text text-transparent block drop-shadow-[0_1px_6px_rgba(0,0,0,0.35)]">Style Reference</span>
+          <span class="bg-gradient-to-r from-sky-500 via-cyan-500 to-emerald-500 dark:from-sky-300 dark:via-cyan-300 dark:to-emerald-300 bg-clip-text text-transparent block drop-shadow-[0_1px_6px_rgba(0,0,0,0.35)]">Gallery</span>
+        </h1>
+      </div>
       <div class="max-w-2xl mx-auto">
-        <p class="text-xl text-gray-700 leading-relaxed mb-8">
+        <p class="text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-8">
           Discover, browse, and collect 
           <span class="font-semibold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
             Midjourney style references
           </span>. 
           Each sref unlocks unique artistic possibilities for your AI creations.
         </p>
+        <div class="flex items-center justify-center gap-3">
+          <a href="#explore" class="btn transition shadow-md hover:shadow-lg hover:-translate-y-0.5 dark:!bg-slate-900/90 dark:!text-slate-200 dark:!border-white/30 dark:hover:!bg-slate-900/95 dark:hover:!text-slate-100 dark:hover:ring-2 dark:hover:ring-indigo-400/60 dark:hover:ring-offset-2 dark:hover:ring-offset-slate-950 dark:hover:drop-shadow-[0_0_16px_rgba(99,102,241,0.28)]">Explore gallery</a>
+          <a href={import.meta.env.BASE_URL + 'about'} class="inline-flex items-center text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline">Learn more</a>
+        </div>
       </div>
     </div>
     
@@ -34,5 +38,6 @@ const searchIndex = buildSearchIndex(srefs);
     <div class="absolute bottom-8 left-1/3 w-24 h-24 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-full blur-xl"></div>
   </div>
 
-  <SearchClient client:load items={searchIndex} />
+  <div id="explore"></div>
+  <SearchClient client:idle items={searchIndex} />
 </Layout>

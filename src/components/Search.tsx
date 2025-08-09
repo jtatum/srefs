@@ -60,7 +60,8 @@ export default function Search({ items, onResults }: SearchProps) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search srefs by title, ID, or description..."
-          className="w-full px-4 py-2 pr-10 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          aria-label="Search srefs by title, ID, or description"
+          className="w-full px-4 py-2 pr-10 text-gray-900 bg-white/90 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-white/10 dark:text-gray-100 dark:placeholder-gray-400 dark:border-white/10"
         />
         <svg
           className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -85,9 +86,14 @@ export default function Search({ items, onResults }: SearchProps) {
               onClick={() => toggleTag(tag)}
               className={`px-3 py-1 text-sm font-medium rounded-full transition-colors ${
                 selectedTags.includes(tag)
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'text-white'
+                  : 'chip'
               }`}
+              style={{
+                background: selectedTags.includes(tag)
+                  ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                  : undefined
+              }}
             >
               {tag}
             </button>
