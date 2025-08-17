@@ -10,6 +10,12 @@ vi.mock('../utils/srefCreator.js', () => ({
   createSrefFromMessage: vi.fn()
 }));
 
+vi.mock('fs/promises', () => ({
+  default: {
+    access: vi.fn()
+  }
+}));
+
 // Mock Discord.js components
 const mockModalInteraction = {
   fields: {
@@ -23,7 +29,8 @@ const mockInteraction = {
   showModal: vi.fn(),
   awaitModalSubmit: vi.fn(),
   editReply: vi.fn(),
-  followUp: vi.fn()
+  followUp: vi.fn(),
+  deferReply: vi.fn()
 };
 
 const mockMessage = {
@@ -32,8 +39,12 @@ const mockMessage = {
 };
 
 describe('midjourneyHandler', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
+    
+    // Default mock: sref doesn't exist (for new sref tests)
+    const fs = await import('fs/promises');
+    vi.mocked(fs.default.access).mockRejectedValue(new Error('ENOENT: no such file or directory'));
   });
 
   describe('handleMidjourneyMessage', () => {
@@ -92,7 +103,8 @@ describe('midjourneyHandler', () => {
       // Mock successful sref creation
       vi.mocked(createSrefFromMessage).mockResolvedValue({
         srefId: 'abc12345',
-        srefPath: '/public/data/srefs/sref-abc12345'
+        srefPath: '/public/data/srefs/sref-abc12345',
+        isNewSref: true
       });
 
       await handleMidjourneyMessage(mockMessage as any, mockInteraction as any);
@@ -133,7 +145,8 @@ describe('midjourneyHandler', () => {
 
       vi.mocked(createSrefFromMessage).mockResolvedValue({
         srefId: 'test123',
-        srefPath: '/public/data/srefs/sref-test123'
+        srefPath: '/public/data/srefs/sref-test123',
+        isNewSref: true
       });
 
       await handleMidjourneyMessage(mockMessage as any, mockInteraction as any);
@@ -144,6 +157,59 @@ describe('midjourneyHandler', () => {
         ['test', 'simple'],
         undefined  // undefined for empty description
       );
+    });
+
+    it('should handle adding image to existing sref without modal', async () => {
+      const { parseMidjourneyMessage } = await import('../utils/midjourneyParser.js');
+      const { createSrefFromMessage } = await import('../utils/srefCreator.js');
+      const fs = await import('fs/promises');
+      
+      const mockParsedMessage = {
+        prompt: 'new architectural style',
+        jobId: '87654321-4321-4321-4321-210987654321',
+        imageUrl: 'https://cdn.discord.com/new-test.png',
+        imageWidth: 1024,
+        imageHeight: 1024,
+        srefValue: 'existing123',
+        messageType: 'variation' as const
+      };
+
+      vi.mocked(parseMidjourneyMessage).mockReturnValue(mockParsedMessage);
+      
+      // Mock fs.access to return success (sref exists)
+      vi.mocked(fs.default.access).mockResolvedValue();
+
+      // Mock adding to existing sref
+      vi.mocked(createSrefFromMessage).mockResolvedValue({
+        srefId: 'existing123',
+        srefPath: '/public/data/srefs/sref-existing123',
+        isNewSref: false
+      });
+
+      await handleMidjourneyMessage(mockMessage as any, mockInteraction as any);
+
+      // Should NOT show modal for existing sref
+      expect(mockInteraction.showModal).not.toHaveBeenCalled();
+      expect(mockInteraction.awaitModalSubmit).not.toHaveBeenCalled();
+
+      // Should defer reply immediately
+      expect(mockInteraction.deferReply).toHaveBeenCalledWith({ ephemeral: true });
+
+      // Should create sref with empty values (ignored for existing sref)
+      expect(createSrefFromMessage).toHaveBeenCalledWith(
+        mockParsedMessage,
+        '', // Empty title
+        [], // Empty tags
+        undefined // No description
+      );
+
+      expect(mockMessage.react).toHaveBeenCalledWith('✅');
+      expect(mockInteraction.editReply).toHaveBeenCalledWith({
+        content: expect.stringContaining('📸 Successfully updated sref **existing123**!')
+      });
+      expect(mockInteraction.editReply).toHaveBeenCalledWith({
+        content: expect.stringContaining('*Added new image to existing sref*')
+      });
     });
 
     it('should handle parsing errors', async () => {
@@ -236,7 +302,8 @@ describe('midjourneyHandler', () => {
 
       vi.mocked(createSrefFromMessage).mockResolvedValue({
         srefId: 'test123',
-        srefPath: '/public/data/srefs/sref-test123'
+        srefPath: '/public/data/srefs/sref-test123',
+        isNewSref: true
       });
 
       // Mock reaction failure

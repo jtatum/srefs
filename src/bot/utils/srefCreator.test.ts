@@ -39,6 +39,9 @@ describe('createSrefFromMessage', () => {
     
     // Mock fs.writeFile
     mockFs.writeFile.mockResolvedValue();
+    
+    // Mock fs.access to return file not found (new sref by default)
+    mockFs.access.mockRejectedValue(new Error('ENOENT: no such file or directory'));
   });
 
   afterEach(() => {
@@ -57,6 +60,7 @@ describe('createSrefFromMessage', () => {
 
     expect(result.srefId).toBe('42'); // Should use the sref value from mock
     expect(result.srefPath).toContain('public/data/srefs/sref-42');
+    expect(result.isNewSref).toBe(true);
 
     expect(ensureDirectoryExists).toHaveBeenCalledWith(
       expect.stringContaining('public/data/srefs/sref-42/images')
@@ -175,7 +179,9 @@ describe('createSrefFromMessage', () => {
     const result2 = await createSrefFromMessage(messageWithoutSref, 'Title 2', ['test']);
 
     expect(result1.srefId).toHaveLength(8);
+    expect(result1.isNewSref).toBe(true);
     expect(result2.srefId).toHaveLength(8);
+    expect(result2.isNewSref).toBe(true);
     expect(result1.srefId).not.toBe(result2.srefId);
   });
 
@@ -207,6 +213,7 @@ describe('createSrefFromMessage', () => {
 
     expect(result.srefId).toBe('123456');
     expect(result.srefPath).toContain('sref-123456');
+    expect(result.isNewSref).toBe(true);
 
     const yamlCall = mockYaml.dump.mock.calls[0][0];
     expect(yamlCall.id).toBe('123456');
@@ -226,5 +233,69 @@ describe('createSrefFromMessage', () => {
 
     expect(result.srefId).toHaveLength(8);
     expect(result.srefId).toMatch(/^[a-z0-9]{8}$/);
+    expect(result.isNewSref).toBe(true);
+  });
+
+  it('should add image to existing sref when meta.yaml exists', async () => {
+    const { downloadImage, ensureDirectoryExists } = await import('./imageDownloader.js');
+    
+    // Mock existing metadata
+    const existingMetadata = {
+      id: '42',
+      title: 'Existing Title',
+      description: 'Existing description',
+      tags: ['existing', 'tags'],
+      cover_image: 'existing.jpg',
+      created: '2024-01-01',
+      images: [
+        {
+          filename: 'existing.jpg',
+          prompt: 'existing prompt',
+          width: 512,
+          height: 512,
+          aspectRatio: 1
+        }
+      ]
+    };
+
+    // Mock fs.access to return success (file exists)
+    mockFs.access.mockResolvedValue();
+    
+    // Mock fs.readFile to return existing metadata
+    mockFs.readFile.mockResolvedValue('existing yaml content');
+    mockYaml.load.mockReturnValue(existingMetadata);
+
+    const result = await createSrefFromMessage(
+      mockParsedMessage,
+      'New Title', // This should be ignored for existing sref
+      ['new', 'tags'], // These should be ignored for existing sref
+      'New description' // This should be ignored for existing sref
+    );
+
+    expect(result.srefId).toBe('42');
+    expect(result.srefPath).toContain('public/data/srefs/sref-42');
+    expect(result.isNewSref).toBe(false);
+
+    // Should read existing metadata
+    expect(mockFs.readFile).toHaveBeenCalledWith(
+      expect.stringContaining('meta.yaml'), 
+      'utf-8'
+    );
+    expect(mockYaml.load).toHaveBeenCalledWith('existing yaml content');
+
+    // Should download image with unique filename
+    expect(downloadImage).toHaveBeenCalledWith(
+      'https://cdn.discord.com/test.png',
+      expect.stringMatching(/image-\d+\.png$/)
+    );
+
+    // Should preserve existing metadata but add new image
+    const yamlDumpCall = mockYaml.dump.mock.calls[0][0];
+    expect(yamlDumpCall.id).toBe('42');
+    expect(yamlDumpCall.title).toBe('Existing Title');
+    expect(yamlDumpCall.description).toBe('Existing description');
+    expect(yamlDumpCall.tags).toEqual(['existing', 'tags']);
+    expect(yamlDumpCall.images).toHaveLength(2); // Original + new image
+    expect(yamlDumpCall.images[1].prompt).toBe('futuristic city architecture');
   });
 });
