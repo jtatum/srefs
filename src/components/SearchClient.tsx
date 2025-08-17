@@ -162,7 +162,15 @@ export default function SearchClient({ items }: SearchClientProps) {
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <>
+          {/* Results Counter */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Showing <span className="font-medium text-gray-900 dark:text-gray-100">{results.length.toLocaleString()}</span> of <span className="font-medium text-gray-900 dark:text-gray-100">{items.length.toLocaleString()}</span> style references
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {results.map(item => (
             <article key={item.id} className="group relative">
               {/* Card Glow Effect */}
@@ -240,6 +248,7 @@ export default function SearchClient({ items }: SearchClientProps) {
             </article>
           ))}
         </div>
+        </>
       )}
     </div>
   );

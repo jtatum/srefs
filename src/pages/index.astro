@@ -1,10 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import SearchClient from '../components/SearchClient';
-import { getAllSrefs, buildSearchIndex } from '../lib/srefs';
+import { getAllSrefs, buildSearchIndex, getSrefCount } from '../lib/srefs';
 
 const srefs = await getAllSrefs();
 const searchIndex = buildSearchIndex(srefs);
+const srefCount = await getSrefCount();
 ---
 
 <Layout title="Midjourney Sref Gallery">
@@ -25,6 +26,16 @@ const searchIndex = buildSearchIndex(srefs);
           </span>. 
           Each sref unlocks unique artistic possibilities for your AI creations.
         </p>
+        <div class="mb-8">
+          <div class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-full border border-indigo-200/60 dark:border-indigo-500/30">
+            <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            <span class="text-sm font-medium text-indigo-900 dark:text-indigo-200">
+              {srefCount.toLocaleString()} style references available
+            </span>
+          </div>
+        </div>
         <div class="flex items-center justify-center gap-3">
           <a href="#explore" class="btn transition shadow-md hover:shadow-lg hover:-translate-y-0.5 dark:!bg-slate-900/90 dark:!text-slate-200 dark:!border-white/30 dark:hover:!bg-slate-900/95 dark:hover:!text-slate-100 dark:hover:ring-2 dark:hover:ring-indigo-400/60 dark:hover:ring-offset-2 dark:hover:ring-offset-slate-950 dark:hover:drop-shadow-[0_0_16px_rgba(99,102,241,0.28)]">Explore gallery</a>
           <a href={import.meta.env.BASE_URL + 'about'} class="inline-flex items-center text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline">Learn more</a>

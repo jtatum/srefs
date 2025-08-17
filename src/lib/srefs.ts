@@ -6,6 +6,18 @@ import { getImage } from 'astro:assets';
 
 const DATA_DIR = path.join(process.cwd(), 'public', 'data', 'srefs');
 
+export async function getSrefCount(): Promise<number> {
+  try {
+    const srefDirs = await fs.readdir(DATA_DIR);
+    // Much faster: just count directories that start with 'sref-'
+    // This assumes the bot and manual creation follow naming convention
+    return srefDirs.filter(dir => dir.startsWith('sref-')).length;
+  } catch (error) {
+    console.error('Error counting srefs:', error);
+    return 0;
+  }
+}
+
 export async function getAllSrefs(): Promise<ProcessedSref[]> {
   try {
     const srefDirs = await fs.readdir(DATA_DIR);

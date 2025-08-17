@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { buildSearchIndex } from './srefs';
+import { buildSearchIndex, getSrefCount } from './srefs';
 import { mockSrefs } from '../../tests/mocks/mockData';
 import type { ProcessedSref } from './types';
+import fs from 'fs/promises';
 
 // Mock the sharp module
 vi.mock('sharp', () => ({
@@ -16,6 +17,13 @@ vi.mock('sharp', () => ({
 // Mock astro:assets
 vi.mock('astro:assets', () => ({
   getImage: vi.fn(),
+}));
+
+// Mock fs/promises
+vi.mock('fs/promises', () => ({
+  default: {
+    readdir: vi.fn(),
+  }
 }));
 
 describe('srefs data loading', () => {
@@ -142,5 +150,41 @@ describe('image processing', () => {
     expect(imageFiles).toHaveLength(4);
     expect(imageFiles).not.toContain('document.pdf');
     expect(imageFiles).not.toContain('script.js');
+  });
+});
+
+describe('getSrefCount', () => {
+  it('should count directories starting with sref-', async () => {
+    const mockDirs = [
+      'sref-12345',
+      'sref-67890',
+      'sref-abcdef',
+      'other-directory',
+      '.DS_Store',
+      'random-folder'
+    ];
+
+    const mockFs = await import('fs/promises');
+    vi.mocked(mockFs.default.readdir).mockResolvedValue(mockDirs as any);
+
+    const count = await getSrefCount();
+    expect(count).toBe(3); // Only the 3 sref- directories
+  });
+
+  it('should return 0 when directory does not exist', async () => {
+    const mockFs = await import('fs/promises');
+    vi.mocked(mockFs.default.readdir).mockRejectedValue(new Error('ENOENT: no such file or directory'));
+
+    const count = await getSrefCount();
+    expect(count).toBe(0);
+  });
+
+  it('should return 0 when no sref directories exist', async () => {
+    const mockDirs = ['other-folder', '.DS_Store', 'README.md'];
+    const mockFs = await import('fs/promises');
+    vi.mocked(mockFs.default.readdir).mockResolvedValue(mockDirs as any);
+
+    const count = await getSrefCount();
+    expect(count).toBe(0);
   });
 });
