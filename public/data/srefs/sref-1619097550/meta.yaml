@@ -1,0 +1,22 @@
+id: "1619097550"
+title: Pastel splatter impression
+tags:
+  - painting
+  - pastel
+  - impressionism
+  - abstract
+cover_image: image.png
+created: "2025-08-17"
+images:
+  - filename: image.png
+    prompt: "\"\""
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755433143471.png
+    prompt: >-
+      a mermaid swimming with a school of colorful jellyfish with tendrils,
+      underwater photo
+    width: 2048
+    height: 2048
+    aspectRatio: 1

@@ -1,0 +1,40 @@
+id: "2799482521"
+title: KGB Collage
+description: A hint of Bauhaus
+tags:
+  - 1960s
+  - vintage
+  - duotone
+  - yellow
+  - collage
+  - text
+  - surreal
+cover_image: image.png
+created: "2025-08-17"
+images:
+  - filename: image.png
+    prompt: the cover page of kgb files on bojack horseman
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755432302407.png
+    prompt: >-
+      bernie sanders dressed in a sweater and ear muffs in front of large
+      burning buildings, done in the style of giovanni battista piranesi
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755432309169.png
+    prompt: >-
+      old women at a grimy doll convention. they are all holding dolls and
+      sitting around a folding card table.
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755432321168.png
+    prompt: >-
+      a candid photo of a sad pig man holding a plastic bag of groceries and
+      looking down on a city street
+    width: 2048
+    height: 2048
+    aspectRatio: 1

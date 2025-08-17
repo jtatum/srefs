@@ -1,0 +1,27 @@
+id: "1147125222"
+title: Flat round kawaii
+tags:
+  - illustration
+  - flat
+  - cute
+  - round
+cover_image: image.png
+created: "2025-08-17"
+images:
+  - filename: image.png
+    prompt: nyancat is hanging with bmo
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755432411690.png
+    prompt: a guy sitting on a bench in the park
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755432432704.png
+    prompt: >-
+      a mermaid swimming with a school of colorful jellyfish with tendrils,
+      underwater photo
+    width: 2048
+    height: 2048
+    aspectRatio: 1

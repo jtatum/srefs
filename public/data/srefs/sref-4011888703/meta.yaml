@@ -1,0 +1,30 @@
+id: "4011888703"
+title: Vinyl space fashion
+tags:
+  - pink
+  - photo
+  - fashion
+  - sci-fi
+cover_image: image.png
+created: "2025-08-17"
+images:
+  - filename: image.png
+    prompt: >-
+      a photo of cute little friends; a crow guy and a wolf guy, sitting on the
+      floor, with their legs out in front of them, with a turntable playing a
+      record between them
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755432072022.png
+    prompt: >-
+      a mermaid swimming with a school of colorful jellyfish with tendrils,
+      underwater photo
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755432244343.png
+    prompt: elaborate ruins done in the style of giovanni battista piranesi
+    width: 2048
+    height: 2048
+    aspectRatio: 1

@@ -1,0 +1,36 @@
+id: "3963449852"
+title: Alien doors pink and blue
+tags:
+  - pink
+  - blue
+  - surreal
+  - photo
+  - sci-fi
+cover_image: image.png
+created: "2025-08-17"
+images:
+  - filename: image.png
+    prompt: a spaceman approaches an open door at the golden hour
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755431373618.png
+    prompt: a steaming fancy bowl of ramen
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755431852624.png
+    prompt: spider SpongeBob hybrid
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755432007606.png
+    prompt: princess carolyn
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755432228400.png
+    prompt: a candid photo of a pig man on the street
+    width: 2048
+    height: 2048
+    aspectRatio: 1

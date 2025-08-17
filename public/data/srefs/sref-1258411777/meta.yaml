@@ -1,0 +1,19 @@
+id: "1258411777"
+title: Mondrian cuban stained glass
+tags:
+  - stained glass, abstract, cubism
+cover_image: image.png
+created: "2025-08-17"
+images:
+  - filename: image.png
+    prompt: >-
+      a mermaid swimming with a school of colorful jellyfish with tendrils,
+      underwater photo
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755434059624.png
+    prompt: "\"\""
+    width: 2048
+    height: 2048
+    aspectRatio: 1

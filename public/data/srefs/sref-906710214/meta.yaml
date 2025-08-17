@@ -1,0 +1,22 @@
+id: "906710214"
+title: Rainbow points
+tags:
+  - surreal
+  - photo
+  - rainbow
+  - stars
+cover_image: image.png
+created: "2025-08-17"
+images:
+  - filename: image.png
+    prompt: "\"\""
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755432947489.png
+    prompt: >-
+      a mermaid swimming with a school of colorful jellyfish with tendrils,
+      underwater photo
+    width: 2048
+    height: 2048
+    aspectRatio: 1

@@ -1,0 +1,23 @@
+id: "3933843960"
+title: Red and white duotone text
+tags:
+  - duotone
+  - text
+  - illustration
+  - red
+  - white
+cover_image: image.png
+created: "2025-08-17"
+images:
+  - filename: image.png
+    prompt: "\"\""
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755434376618.png
+    prompt: >-
+      a mermaid swimming with a school of colorful jellyfish with tendrils,
+      underwater photo
+    width: 2048
+    height: 2048
+    aspectRatio: 1

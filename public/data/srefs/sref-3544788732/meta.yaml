@@ -1,0 +1,26 @@
+id: "3544788732"
+title: Tintin
+description: 1980s Franco-Belgian comic book style
+tags:
+  - comic
+  - 1980s
+  - illustration
+  - retro
+cover_image: image.png
+created: "2025-08-17"
+images:
+  - filename: image.png
+    prompt: princess carolyn
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755431874929.png
+    prompt: spider SpongeBob hybrid
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755431994412.png
+    prompt: a girl wearing red emerges from the woods in front of a cottage
+    width: 2048
+    height: 2048
+    aspectRatio: 1
