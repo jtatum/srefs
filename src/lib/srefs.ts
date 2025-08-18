@@ -1,5 +1,5 @@
 import path from 'path';
-import type { ProcessedSref, ProcessedImage } from './types';
+import type { ProcessedSref, ProcessedImage, SrefMetadata, SrefImage } from './types';
 import { getImage } from 'astro:assets';
 import { getSrefCount as getCount, getAllSrefMetadata, getSrefMetadataById } from './sref-data';
 
@@ -32,42 +32,28 @@ export async function getSrefById(id: string): Promise<ProcessedSref | null> {
   return processMetadata(metadata);
 }
 
-async function processMetadata(metadata: any): Promise<ProcessedSref> {
+async function processImageToProcessedImage(img: SrefImage, dirName: string, imagesDir: string): Promise<ProcessedImage> {
+  const imagePath = `${import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/'}data/srefs/${dirName}/images/${img.filename}`;
+  const dimensions = await getImageDimensions(path.join(imagesDir, img.filename));
+  
+  return {
+    ...img,
+    url: imagePath,
+    width: dimensions.width,
+    height: dimensions.height,
+    aspectRatio: dimensions.width / dimensions.height,
+  };
+}
+
+async function processMetadata(metadata: SrefMetadata): Promise<ProcessedSref> {
   const dirName = `sref-${metadata.id}`;
   const imagesDir = path.join(DATA_DIR, dirName, 'images');
-  let processedImages: ProcessedImage[] = [];
   
-  if (metadata.images && metadata.images.length > 0) {
-    processedImages = await Promise.all(
-      metadata.images.map(async (img: any) => {
-        const imagePath = `${import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/'}data/srefs/${dirName}/images/${img.filename}`;
-        const dimensions = await getImageDimensions(path.join(imagesDir, img.filename));
-        
-        return {
-          ...img,
-          url: imagePath,
-          width: dimensions.width,
-          height: dimensions.height,
-          aspectRatio: dimensions.width / dimensions.height,
-        };
-      })
-    );
-  } else {
-    processedImages = await Promise.all(
-      (metadata.images || []).map(async (img: any) => {
-        const imagePath = `${import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/'}data/srefs/${dirName}/images/${img.filename}`;
-        const dimensions = await getImageDimensions(path.join(imagesDir, img.filename));
-        
-        return {
-          filename: img.filename,
-          url: imagePath,
-          width: dimensions.width,
-          height: dimensions.height,
-          aspectRatio: dimensions.width / dimensions.height,
-        };
-      })
-    );
-  }
+  const processedImages: ProcessedImage[] = await Promise.all(
+    (metadata.images || []).map(async (img) => 
+      processImageToProcessedImage(img, dirName, imagesDir)
+    )
+  );
   
   const coverImage = processedImages.find(img => img.filename === metadata.cover_image) || processedImages[0];
   
