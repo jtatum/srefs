@@ -1,0 +1,24 @@
+id: "3708887832"
+title: Tattoo
+tags:
+  - illustration
+cover_image: image.png
+created: "2025-08-18"
+images:
+  - filename: image.png
+    prompt: "\"\""
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755484070495.png
+    prompt: "\"\""
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755484080608.png
+    prompt: >-
+      a mermaid swimming with a school of colorful jellyfish with tendrils,
+      underwater photo
+    width: 2048
+    height: 2048
+    aspectRatio: 1

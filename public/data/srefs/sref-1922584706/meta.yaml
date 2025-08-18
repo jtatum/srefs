@@ -1,0 +1,18 @@
+id: "1922584706"
+title: Sci-fi concept art
+tags:
+  - illustration
+  - sci-fi
+cover_image: image.png
+created: "2025-08-18"
+images:
+  - filename: image.png
+    prompt: a long line of anthropomorphic pig-man walking through the desert
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755486055755.png
+    prompt: "\"\""
+    width: 2048
+    height: 2048
+    aspectRatio: 1

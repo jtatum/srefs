@@ -1,0 +1,12 @@
+id: "1960789123"
+title: Simple realism
+tags:
+  - painting
+cover_image: image.png
+created: "2025-08-18"
+images:
+  - filename: image.png
+    prompt: "\"\" --raw"
+    width: 2048
+    height: 2048
+    aspectRatio: 1

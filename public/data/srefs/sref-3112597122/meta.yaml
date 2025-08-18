@@ -1,0 +1,14 @@
+id: "3112597122"
+title: 80s video game
+tags:
+  - pixel
+  - 3d
+  - 1980s
+cover_image: image.png
+created: "2025-08-18"
+images:
+  - filename: image.png
+    prompt: "\"\""
+    width: 2048
+    height: 2048
+    aspectRatio: 1

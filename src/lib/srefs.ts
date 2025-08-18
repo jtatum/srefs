@@ -1,99 +1,59 @@
-import fs from 'fs/promises';
 import path from 'path';
-import yaml from 'js-yaml';
-import type { SrefMetadata, ProcessedSref, ProcessedImage } from './types';
+import type { ProcessedSref, ProcessedImage, SrefMetadata, SrefImage } from './types';
 import { getImage } from 'astro:assets';
+import { getSrefCount as getCount, getAllSrefMetadata, getSrefMetadataById } from './sref-data';
 
 const DATA_DIR = path.join(process.cwd(), 'public', 'data', 'srefs');
 
-export async function getSrefCount(): Promise<number> {
-  try {
-    const srefDirs = await fs.readdir(DATA_DIR);
-    // Much faster: just count directories that start with 'sref-'
-    // This assumes the bot and manual creation follow naming convention
-    return srefDirs.filter(dir => dir.startsWith('sref-')).length;
-  } catch (error) {
-    console.error('Error counting srefs:', error);
-    return 0;
-  }
-}
+export { getSrefCount } from './sref-data';
 
 export async function getAllSrefs(): Promise<ProcessedSref[]> {
-  try {
-    const srefDirs = await fs.readdir(DATA_DIR);
-    const srefs = await Promise.all(
-      srefDirs.map(async (dir) => {
-        try {
-          return await loadSref(dir);
-        } catch (error) {
-          console.error(`Error loading sref ${dir}:`, error);
-          return null;
-        }
-      })
-    );
-    
-    return srefs.filter((sref): sref is ProcessedSref => sref !== null);
-  } catch (error) {
-    console.error('Error reading srefs directory:', error);
-    return [];
-  }
+  const metadataList = await getAllSrefMetadata();
+  const srefs = await Promise.all(
+    metadataList.map(async (metadata) => {
+      try {
+        return await processMetadata(metadata);
+      } catch (error) {
+        console.error(`Error processing sref ${metadata.id}:`, error);
+        return null;
+      }
+    })
+  );
+  
+  return srefs.filter((sref): sref is ProcessedSref => sref !== null);
 }
 
 export async function getSrefById(id: string): Promise<ProcessedSref | null> {
-  const srefDirs = await fs.readdir(DATA_DIR);
-  const matchingDir = srefDirs.find(dir => dir.includes(id));
-  
-  if (!matchingDir) {
+  const metadata = await getSrefMetadataById(id);
+  if (!metadata) {
     return null;
   }
   
-  return loadSref(matchingDir);
+  return processMetadata(metadata);
 }
 
-async function loadSref(dirName: string): Promise<ProcessedSref> {
-  const srefPath = path.join(DATA_DIR, dirName);
-  const metaPath = path.join(srefPath, 'meta.yaml');
+async function processImageToProcessedImage(img: SrefImage, dirName: string, imagesDir: string): Promise<ProcessedImage> {
+  const imagePath = `${import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/'}data/srefs/${dirName}/images/${img.filename}`;
+  const dimensions = await getImageDimensions(path.join(imagesDir, img.filename));
   
-  const metaContent = await fs.readFile(metaPath, 'utf-8');
-  const metadata = yaml.load(metaContent) as SrefMetadata;
+  return {
+    ...img,
+    url: imagePath,
+    width: dimensions.width,
+    height: dimensions.height,
+    aspectRatio: dimensions.width / dimensions.height,
+  };
+}
+
+async function processMetadata(metadata: SrefMetadata): Promise<ProcessedSref> {
+  const dirName = `sref-${metadata.id}`;
+  const imagesDir = path.join(DATA_DIR, dirName, 'images');
   
-  const imagesDir = path.join(srefPath, 'images');
-  let processedImages: ProcessedImage[] = [];
-  
-  if (metadata.images && metadata.images.length > 0) {
-    processedImages = await Promise.all(
-      metadata.images.map(async (img) => {
-        const imagePath = `${import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/'}data/srefs/${dirName}/images/${img.filename}`;
-        const dimensions = await getImageDimensions(path.join(imagesDir, img.filename));
-        
-        return {
-          ...img,
-          url: imagePath,
-          width: dimensions.width,
-          height: dimensions.height,
-          aspectRatio: dimensions.width / dimensions.height,
-        };
-      })
-    );
-  } else {
-    const imageFiles = await fs.readdir(imagesDir).catch(() => []);
-    processedImages = await Promise.all(
-      imageFiles
-        .filter(file => /\.(jpg|jpeg|png|webp|gif)$/i.test(file))
-        .map(async (filename) => {
-          const imagePath = `${import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/'}data/srefs/${dirName}/images/${filename}`;
-          const dimensions = await getImageDimensions(path.join(imagesDir, filename));
-          
-          return {
-            filename,
-            url: imagePath,
-            width: dimensions.width,
-            height: dimensions.height,
-            aspectRatio: dimensions.width / dimensions.height,
-          };
-        })
-    );
-  }
+  const processedImages: ProcessedImage[] = await Promise.all(
+    (metadata.images || []).map(async (img) => 
+      processImageToProcessedImage(img, dirName, imagesDir)
+    )
+  );
   
   const coverImage = processedImages.find(img => img.filename === metadata.cover_image) || processedImages[0];
   
