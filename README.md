@@ -15,6 +15,7 @@ A static site for organizing and browsing Midjourney style references (srefs). B
 - 📱 **Responsive Design** - Works on all devices
 - 🚀 **Static Site** - Deploy anywhere that serves HTML
 - 🤖 **Discord Bot** - Add srefs directly from Midjourney messages
+- 📊 **Tag Analytics** - Built-in utility to analyze tag usage and cleanup
 - 🔗 **GitHub Integration** - Edit on GitHub link for easy contribution
 
 ## Quick Start
@@ -62,6 +63,22 @@ images:
 3. Add images to `public/data/srefs/sref-[id]/images/`
 4. Build the site: `npm run build`
 
+## Tag Management
+
+Use the built-in tag analysis utility to understand and manage your collection's tags:
+
+```bash
+npx tsx scripts/analyze-tags.ts
+```
+
+This shows:
+- Complete tag usage statistics
+- Tags with low usage (candidates for cleanup)
+- Which srefs use each tag
+- Usage distribution across your collection
+
+Perfect for identifying inconsistent tags or finding underutilized categories.
+
 ## Discord Bot Setup
 
 1. **Create Discord Application:**
@@ -106,6 +123,7 @@ images:
 │   ├── components/        # React and Astro components
 │   ├── layouts/           # Page layouts
 │   └── lib/               # Utilities and data loading
+├── scripts/               # Utility scripts (tag analysis, etc.)
 ├── tests/                 # Test files and fixtures
 └── dist/                  # Built static site
 ```
@@ -126,6 +144,11 @@ images:
 |---------|-------------|
 | `npm run bot:dev` | Start bot in development mode (with file watching) |
 | `npm run bot:start` | Start bot in production mode |
+
+### Utility Commands
+| Command | Description |
+|---------|-------------|
+| `npx tsx scripts/analyze-tags.ts` | Analyze tag usage statistics and find low-usage tags |
 
 ## Testing
 

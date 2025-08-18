@@ -25,6 +25,9 @@ npm run test:e2e:ui   # Run Playwright E2E tests with UI
 # Discord bot commands
 npm run bot:dev       # Start bot in development mode (with file watching)
 npm run bot:start     # Start bot in production mode
+
+# Utility commands
+npx tsx scripts/analyze-tags.ts  # Analyze tag usage statistics
 ```
 
 ## Architecture
@@ -52,7 +55,8 @@ images:                       # Optional, auto-discovered if omitted
 ```
 
 ### Build-Time Processing
-- `src/lib/srefs.ts`: Data loader that reads YAML files and automatically extracts image dimensions using Sharp
+- `src/lib/srefs.ts`: Astro-specific data loader that processes YAML files and extracts image dimensions using Sharp
+- `src/lib/sref-data.ts`: Common data loading library (no Astro dependencies) for scripts and utilities
 - Images are served directly from `public/data/srefs/` directories via `/data/srefs/` URLs
 - Search index is generated at build time from all srefs
 
@@ -80,6 +84,41 @@ Client-side search using Fuse.js with:
    ```
 3. Add images to `public/data/srefs/sref-[your-id]/images/`
 4. Run `npm run build` to regenerate the site
+
+## Tag Management
+
+### Tag Analysis Utility
+The project includes a tag analysis utility to help manage and understand tag usage:
+
+```bash
+npx tsx scripts/analyze-tags.ts
+```
+
+This utility provides:
+- **Complete tag statistics** sorted by usage frequency
+- **Low-usage tags** (≤3 uses) highlighted for potential cleanup
+- **Usage distribution** showing how many tags fall into each usage bucket
+- **Sref mapping** showing which srefs use each tag
+
+Example output:
+```
+=== TAG USAGE ANALYSIS ===
+
+📊 Total unique tags: 57
+📈 Most used tag: "illustration" (18 times)
+📉 Least used tags: 25 tags used only once
+
+🔍 LOW USAGE TAGS (≤3 uses):
+• "cute" (1 use): 1147125222
+• "cyberpunk" (1 use): 2067381016
+• "vintage" (2 uses): 2799482521, 62
+```
+
+Use this data to:
+- Identify tags that could be merged or standardized
+- Find underutilized tags that might be worth promoting
+- Understand your collection's tag distribution
+- Clean up inconsistent tagging patterns
 
 ## Discord Bot Integration
 
@@ -144,7 +183,8 @@ A Discord bot is included that allows adding Midjourney messages directly to the
 The project has comprehensive test coverage for critical functionality:
 
 ### Unit Tests (Vitest)
-- `src/lib/srefs.test.ts` - Data loading and processing tests
+- `src/lib/srefs.test.ts` - Astro-specific data loading and processing tests
+- `src/lib/sref-data.test.ts` - Common data library tests (filesystem and YAML parsing)
 - `src/components/SearchClient.test.tsx` - Search and filtering tests (100% coverage)
 - `tests/integration/build.test.ts` - Build process validation
 
