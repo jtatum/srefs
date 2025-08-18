@@ -8,6 +8,8 @@ interface TagStats {
   srefs: string[]; // Array of sref IDs using this tag
 }
 
+const sortByCountAscending = (a: TagStats, b: TagStats) => a.count - b.count;
+
 async function analyzeTags() {
   console.log('Loading all srefs...');
   try {
@@ -35,7 +37,7 @@ async function analyzeTags() {
         count: data.count,
         srefs: data.srefs
       }))
-      .sort((a, b) => a.count - b.count); // Sort by count ascending (least used first)
+      .sort(sortByCountAscending); // Sort by count ascending (least used first)
 
     console.log('=== TAG USAGE ANALYSIS ===\n');
     

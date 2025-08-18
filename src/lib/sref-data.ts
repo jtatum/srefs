@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import yaml from 'js-yaml';
-import type { SrefMetadata } from './types';
+import type { SrefMetadata, SrefImage } from './types';
 
 const DATA_DIR = path.join(process.cwd(), 'public', 'data', 'srefs');
 
@@ -39,14 +39,39 @@ export async function getAllSrefMetadata(): Promise<SrefMetadata[]> {
 }
 
 export async function getSrefMetadataById(id: string): Promise<SrefMetadata | null> {
-  const srefDirs = await fs.readdir(DATA_DIR);
-  const matchingDir = srefDirs.find(dir => dir.includes(id));
-  
-  if (!matchingDir) {
+  try {
+    const srefDirs = await fs.readdir(DATA_DIR);
+    const matchingDir = srefDirs.find(dir => dir === `sref-${id}` || dir.endsWith(`-${id}`));
+    
+    if (!matchingDir) {
+      return null;
+    }
+    
+    return loadSrefMetadata(matchingDir);
+  } catch (error) {
+    console.error(`Error finding sref ${id}:`, error);
     return null;
   }
-  
-  return loadSrefMetadata(matchingDir);
+}
+
+function validateMetadata(data: unknown): data is SrefMetadata {
+  return typeof data === 'object' && data !== null &&
+         (typeof (data as any).id === 'string' || typeof (data as any).id === 'number') &&
+         Array.isArray((data as any).tags) &&
+         typeof (data as any).title === 'string' &&
+         typeof (data as any).cover_image === 'string';
+}
+
+async function autoDiscoverImages(srefPath: string): Promise<SrefImage[]> {
+  const imagesDir = path.join(srefPath, 'images');
+  try {
+    const imageFiles = await fs.readdir(imagesDir);
+    return imageFiles
+      .filter(file => /\.(jpg|jpeg|png|webp|gif)$/i.test(file))
+      .map(filename => ({ filename }));
+  } catch (error) {
+    return [];
+  }
 }
 
 async function loadSrefMetadata(dirName: string): Promise<SrefMetadata> {
@@ -54,19 +79,20 @@ async function loadSrefMetadata(dirName: string): Promise<SrefMetadata> {
   const metaPath = path.join(srefPath, 'meta.yaml');
   
   const metaContent = await fs.readFile(metaPath, 'utf-8');
-  const metadata = yaml.load(metaContent) as SrefMetadata;
+  const rawData = yaml.load(metaContent);
+  
+  if (!validateMetadata(rawData)) {
+    throw new Error(`Invalid metadata in ${dirName}: missing required fields`);
+  }
+  
+  const metadata = rawData;
+  
+  // Ensure ID is always a string
+  metadata.id = String(metadata.id);
   
   // Auto-discover images if not specified in metadata
   if (!metadata.images || metadata.images.length === 0) {
-    const imagesDir = path.join(srefPath, 'images');
-    try {
-      const imageFiles = await fs.readdir(imagesDir);
-      metadata.images = imageFiles
-        .filter(file => /\.(jpg|jpeg|png|webp|gif)$/i.test(file))
-        .map(filename => ({ filename }));
-    } catch (error) {
-      metadata.images = [];
-    }
+    metadata.images = await autoDiscoverImages(srefPath);
   }
   
   return metadata;

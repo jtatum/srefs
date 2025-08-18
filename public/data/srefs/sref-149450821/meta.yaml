@@ -1,0 +1,14 @@
+id: "149450821"
+title: Black and white figure
+tags:
+  - black
+  - white
+  - illustration
+cover_image: image.png
+created: "2025-08-18"
+images:
+  - filename: image.png
+    prompt: "\"\""
+    width: 2048
+    height: 2048
+    aspectRatio: 1

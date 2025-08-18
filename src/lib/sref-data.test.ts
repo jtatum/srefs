@@ -38,12 +38,12 @@ describe('sref-data', () => {
     it('should load all sref metadata successfully', async () => {
       mockFs.readdir.mockResolvedValue(['sref-123', 'sref-456'] as any);
       mockFs.readFile
-        .mockResolvedValueOnce('id: "123"\ntitle: "Test 1"\ntags: [test]')
-        .mockResolvedValueOnce('id: "456"\ntitle: "Test 2"\ntags: [test, demo]');
+        .mockResolvedValueOnce('id: "123"\ntitle: "Test 1"\ntags: [test]\ncover_image: "cover.png"')
+        .mockResolvedValueOnce('id: "456"\ntitle: "Test 2"\ntags: [test, demo]\ncover_image: "cover.jpg"');
       
       mockYaml.load
-        .mockReturnValueOnce({ id: '123', title: 'Test 1', tags: ['test'], images: [] })
-        .mockReturnValueOnce({ id: '456', title: 'Test 2', tags: ['test', 'demo'], images: [] });
+        .mockReturnValueOnce({ id: '123', title: 'Test 1', tags: ['test'], cover_image: 'cover.png', images: [] })
+        .mockReturnValueOnce({ id: '456', title: 'Test 2', tags: ['test', 'demo'], cover_image: 'cover.jpg', images: [] });
 
       // Mock image directory reads for auto-discovery
       mockFs.readdir
@@ -70,10 +70,10 @@ describe('sref-data', () => {
       mockFs.readdir.mockResolvedValue(['sref-123', 'sref-456'] as any);
       mockFs.readFile
         .mockRejectedValueOnce(new Error('File not found'))
-        .mockResolvedValueOnce('id: "456"\ntitle: "Test 2"\ntags: [test]');
+        .mockResolvedValueOnce('id: "456"\ntitle: "Test 2"\ntags: [test]\ncover_image: "cover.png"');
       
       mockYaml.load
-        .mockReturnValueOnce({ id: '456', title: 'Test 2', tags: ['test'], images: [] });
+        .mockReturnValueOnce({ id: '456', title: 'Test 2', tags: ['test'], cover_image: 'cover.png', images: [] });
 
       // Mock successful image directory read for the working sref
       mockFs.readdir
@@ -94,8 +94,8 @@ describe('sref-data', () => {
         .mockResolvedValueOnce(['sref-123', 'sref-456'] as any) // Initial directory read
         .mockResolvedValueOnce(['image.png'] as any); // Image directory read
       
-      mockFs.readFile.mockResolvedValue('id: "123"\ntitle: "Test"\ntags: [test]');
-      mockYaml.load.mockReturnValue({ id: '123', title: 'Test', tags: ['test'], images: [] });
+      mockFs.readFile.mockResolvedValue('id: "123"\ntitle: "Test"\ntags: [test]\ncover_image: "cover.png"');
+      mockYaml.load.mockReturnValue({ id: '123', title: 'Test', tags: ['test'], cover_image: 'cover.png', images: [] });
       
       const sref = await getSrefMetadataById('123');
       

@@ -1,0 +1,13 @@
+id: "2132040604"
+title: Chinoiserie ink
+tags:
+  - illustration
+  - ink
+cover_image: image.png
+created: "2025-08-18"
+images:
+  - filename: image.png
+    prompt: "\"\""
+    width: 2048
+    height: 2048
+    aspectRatio: 1

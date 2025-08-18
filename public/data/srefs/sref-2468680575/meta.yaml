@@ -1,0 +1,27 @@
+id: "2468680575"
+title: Surreal overhead
+tags:
+  - photo
+  - surreal
+  - overhead
+  - miniature
+cover_image: image.png
+created: "2025-08-18"
+images:
+  - filename: image.png
+    prompt: >-
+      a mermaid swimming with a school of colorful jellyfish with tendrils,
+      underwater photo
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755484138854.png
+    prompt: "\"\""
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755484145068.png
+    prompt: "\"\""
+    width: 2048
+    height: 2048
+    aspectRatio: 1
