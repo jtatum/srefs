@@ -1,0 +1,84 @@
+# S3 bucket for storing images
+resource "aws_s3_bucket" "sref_images" {
+  bucket = var.bucket_name
+
+  tags = {
+    Name    = "Sref Gallery Images"
+    Project = "sref-gallery"
+  }
+}
+
+# S3 bucket versioning
+resource "aws_s3_bucket_versioning" "sref_images_versioning" {
+  bucket = aws_s3_bucket.sref_images.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+# S3 bucket server-side encryption
+resource "aws_s3_bucket_server_side_encryption_configuration" "sref_images_encryption" {
+  bucket = aws_s3_bucket.sref_images.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+# Block all public access (we'll allow access via CloudFront only)
+resource "aws_s3_bucket_public_access_block" "sref_images_pab" {
+  bucket = aws_s3_bucket.sref_images.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+# CORS configuration for uploads
+resource "aws_s3_bucket_cors_configuration" "sref_images_cors" {
+  bucket = aws_s3_bucket.sref_images.id
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET", "HEAD", "PUT", "POST"]
+    allowed_origins = ["*"]
+    expose_headers  = ["ETag"]
+    max_age_seconds = 3600
+  }
+}
+
+# S3 bucket policy to allow CloudFront access
+resource "aws_s3_bucket_policy" "sref_images_policy" {
+  bucket = aws_s3_bucket.sref_images.id
+  policy = data.aws_iam_policy_document.sref_images_policy.json
+}
+
+data "aws_iam_policy_document" "sref_images_policy" {
+  statement {
+    sid    = "AllowCloudFrontAccess"
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+
+    actions = [
+      "s3:GetObject"
+    ]
+
+    resources = [
+      "${aws_s3_bucket.sref_images.arn}/cdn/*",
+      "${aws_s3_bucket.sref_images.arn}/srefs/*"
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = [aws_cloudfront_distribution.sref_images_cdn.arn]
+    }
+  }
+}

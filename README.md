@@ -44,7 +44,7 @@ npm run build
 
 ### Option 2: Manual
 
-1. Create a new directory in `public/data/srefs/` named `sref-[id]`
+1. Create a new directory in `src/data/srefs/` named `sref-[id]`
 2. Add a `meta.yaml` file:
 
 ```yaml
@@ -60,8 +60,29 @@ images:
     prompt: "example prompt --sref 12345678"
 ```
 
-3. Add images to `public/data/srefs/sref-[id]/images/`
-4. Build the site: `npm run build`
+3. Add images to `src/data/srefs/sref-[id]/images/`
+4. Build the site: `npm run build` (includes S3 sync and image processing)
+
+## S3 Image Storage & CDN
+
+This project uses AWS S3 for scalable image storage and CloudFront for fast global delivery, replacing Git LFS.
+
+### Setup (One-time)
+```bash
+# 1. Deploy AWS infrastructure
+cd terraform && AWS_PROFILE=srefs terraform apply
+
+# 2. Migrate existing images
+AWS_PROFILE=srefs npm run migrate:to-s3
+
+# 3. Update GitHub repository variables with Terraform outputs
+```
+
+### How it Works
+- **Build Pipeline**: `npm run build` syncs from S3 → processes images → uploads to S3
+- **Image Processing**: Creates optimized AVIF/WebP thumbnails and gallery images
+- **CDN Delivery**: CloudFront serves processed images with global caching
+- **No Git LFS**: All images stored in S3, dramatically reducing repository size
 
 ## Tag Management
 
@@ -149,6 +170,8 @@ Perfect for identifying inconsistent tags or finding underutilized categories.
 | Command | Description |
 |---------|-------------|
 | `npx tsx scripts/analyze-tags.ts` | Analyze tag usage statistics and find low-usage tags |
+| `npm run migrate:dry-run` | Test S3 migration without uploading (one-time setup) |
+| `npm run migrate:to-s3` | Migrate existing images to S3 (one-time setup) |
 
 ## Testing
 

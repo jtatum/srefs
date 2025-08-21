@@ -17,6 +17,7 @@ const { srefs } = Astro.props;
       description={sref.description}
       tags={sref.tags}
       coverImageUrl={sref.coverImageUrl}
+      coverImagePath={sref.coverImagePath}
       path={sref.path}
     />
   ))}
@@ -24,6 +25,6 @@ const { srefs } = Astro.props;
 
 {srefs.length === 0 && (
   <div class="text-center py-12">
-    <p class="text-gray-500">No srefs found. Add some to the public/data/srefs directory!</p>
+    <p class="text-gray-500">No srefs found. Add some to the src/data/srefs directory!</p>
   </div>
 )}

@@ -1,0 +1,17 @@
+id: "2130683293"
+title: Art nouveau packaging
+tags:
+  - red
+  - border
+  - illustration
+  - 1910s
+cover_image: image.png
+created: "2025-08-21"
+images:
+  - filename: image.png
+    prompt: >-
+      a mermaid swimming with a school of colorful jellyfish with tendrils,
+      underwater photo
+    width: 2048
+    height: 2048
+    aspectRatio: 1

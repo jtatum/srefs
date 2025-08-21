@@ -13,7 +13,7 @@ export async function createSrefFromMessage(
 ): Promise<{ srefId: string; srefPath: string; isNewSref: boolean }> {
   const srefId = parsedMessage.srefValue || generateSrefId();
   const srefDirName = `sref-${srefId}`;
-  const srefPath = path.join(process.cwd(), 'public', 'data', 'srefs', srefDirName);
+  const srefPath = path.join(process.cwd(), 'src', 'data', 'srefs', srefDirName);
   const imagesPath = path.join(srefPath, 'images');
   const metaPath = path.join(srefPath, 'meta.yaml');
 

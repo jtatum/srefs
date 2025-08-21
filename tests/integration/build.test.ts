@@ -15,14 +15,15 @@ describe('Build Process Integration Tests', () => {
     try {
       const { stdout, stderr } = await execAsync('npm run build', {
         cwd: process.cwd(),
-        timeout: 30000, // 30 second timeout
+        timeout: 60000, // 60 second timeout
       });
-      buildOutput = stdout;
-      buildError = stderr;
+      buildOutput = stdout || '';
+      buildError = stderr || '';
     } catch (error: any) {
-      buildError = error.message;
+      buildError = error.message || 'Build failed';
+      buildOutput = '';
     }
-  }, 60000); // 60 second timeout for beforeAll
+  }, 90000); // 90 second timeout for beforeAll
 
   afterAll(async () => {
     // Clean up dist directory after tests

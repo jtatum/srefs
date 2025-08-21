@@ -27,3 +27,18 @@ coverage/
 
 # claude local settings
 .claude/
+
+# terraform
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/terraform.tfvars
+
+# AWS temporary files  
+.aws/
+
+# Images (now stored in S3)
+src/data/srefs/*/images/
+# Keep metadata files in Git
+!src/data/srefs/*/meta.yaml

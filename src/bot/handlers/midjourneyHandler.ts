@@ -6,7 +6,7 @@ import path from 'path';
 
 async function checkSrefExists(srefId: string): Promise<boolean> {
   const srefDirName = `sref-${srefId}`;
-  const metaPath = path.join(process.cwd(), 'public', 'data', 'srefs', srefDirName, 'meta.yaml');
+  const metaPath = path.join(process.cwd(), 'src', 'data', 'srefs', srefDirName, 'meta.yaml');
   
   try {
     await fs.access(metaPath);

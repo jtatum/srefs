@@ -19,11 +19,13 @@ export interface SrefMetadata {
 export interface ProcessedSref extends SrefMetadata {
   path: string;
   coverImageUrl: string;
+  coverImagePath?: string; // Local file path for getImage()
   processedImages: ProcessedImage[];
 }
 
 export interface ProcessedImage extends SrefImage {
   url: string;
+  filePath: string; // Local file path for getImage()
   width: number;
   height: number;
   aspectRatio: number;

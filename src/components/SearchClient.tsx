@@ -179,12 +179,14 @@ export default function SearchClient({ items }: SearchClientProps) {
               <div className="relative glass rounded-xl overflow-hidden border border-white/20 group-hover:border-white/40 transition-all duration-300">
                 <a href={item.path} className="block">
                   <div className="aspect-[4/3] overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 relative">
-                    <img
-                      src={item.coverImageUrl}
-                      alt={item.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-                    />
+                    {item.coverImageUrl && (
+                      <img
+                        src={item.coverImageUrl}
+                        alt={item.title}
+                        loading="lazy"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                      />
+                    )}
                     
                     {/* Image Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

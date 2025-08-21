@@ -3,7 +3,7 @@ import path from 'path';
 import yaml from 'js-yaml';
 import type { SrefMetadata, SrefImage } from './types';
 
-const DATA_DIR = path.join(process.cwd(), 'public', 'data', 'srefs');
+const DATA_DIR = path.join(process.cwd(), 'src', 'data', 'srefs');
 
 export async function getSrefCount(): Promise<number> {
   try {
