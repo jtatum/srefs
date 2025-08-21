@@ -1,0 +1,22 @@
+id: "3204957300"
+title: Polished metal
+tags:
+  - copper
+  - silver
+  - blue
+  - metal
+cover_image: image.png
+created: "2025-08-21"
+images:
+  - filename: image.png
+    prompt: >-
+      a mermaid swimming with a school of colorful jellyfish with tendrils,
+      underwater photo
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755760508176.png
+    prompt: "\"\""
+    width: 2048
+    height: 2048
+    aspectRatio: 1

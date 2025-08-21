@@ -11,18 +11,19 @@ describe('Build Process Integration Tests', () => {
   let buildError: string;
 
   beforeAll(async () => {
-    // Run the build command
+    // Run the build command (use build:local to skip S3 sync in CI)
     try {
-      const { stdout, stderr } = await execAsync('npm run build', {
+      const { stdout, stderr } = await execAsync('npm run build:local', {
         cwd: process.cwd(),
-        timeout: 30000, // 30 second timeout
+        timeout: 60000, // 60 second timeout
       });
-      buildOutput = stdout;
-      buildError = stderr;
+      buildOutput = stdout || '';
+      buildError = stderr || '';
     } catch (error: any) {
-      buildError = error.message;
+      buildError = error.message || 'Build failed';
+      buildOutput = '';
     }
-  }, 60000); // 60 second timeout for beforeAll
+  }, 90000); // 90 second timeout for beforeAll
 
   afterAll(async () => {
     // Clean up dist directory after tests
@@ -93,7 +94,7 @@ describe('Build Process Integration Tests', () => {
 
 describe('Data Integrity Tests', () => {
   it('should handle various sref configurations', async () => {
-    const dataDir = path.join(process.cwd(), 'data', 'srefs');
+    const dataDir = path.join(process.cwd(), 'src', 'data', 'srefs');
     const dataDirExists = await fs.access(dataDir).then(() => true).catch(() => false);
     
     if (dataDirExists) {
@@ -115,7 +116,7 @@ describe('Data Integrity Tests', () => {
   });
 
   it('should validate image references', async () => {
-    const dataDir = path.join(process.cwd(), 'data', 'srefs');
+    const dataDir = path.join(process.cwd(), 'src', 'data', 'srefs');
     const dataDirExists = await fs.access(dataDir).then(() => true).catch(() => false);
     
     if (dataDirExists) {

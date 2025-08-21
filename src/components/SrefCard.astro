@@ -1,23 +1,72 @@
 ---
+import { getImage } from 'astro:assets';
+import { toCdnUrl } from '../lib/cdn-utils';
+
 export interface Props {
   id: string;
   title: string;
   description?: string;
   tags: string[];
   coverImageUrl: string;
+  coverImagePath?: string;
   path: string;
 }
 
-const { id, title, description, tags, coverImageUrl, path } = Astro.props;
+const { id, title, description, tags, coverImageUrl, coverImagePath, path } = Astro.props;
+
+// Get all images dynamically using Vite's glob import
+const imageModules = import.meta.glob('/src/data/srefs/*/images/*', { eager: true });
+
+// Process image with Astro if we have a file path
+let optimizedImage: any = null;
+if (coverImagePath) {
+  try {
+    // Find the matching imported image module (remove ./ prefix from coverImagePath)
+    const imageKey = `/src/${coverImagePath.replace('./data/', 'data/')}`;
+    const imageModule = imageModules[imageKey];
+    
+    if (imageModule?.default) {
+      // Create square thumbnail for card (consistent grid)
+      // Try AVIF first (best compression), fallback to WebP
+      try {
+        optimizedImage = await getImage({
+          src: imageModule.default,
+          width: 400,
+          height: 400,
+          format: 'avif',
+          quality: 80,
+        });
+      } catch (error) {
+        // Fallback to WebP if AVIF fails
+        optimizedImage = await getImage({
+          src: imageModule.default,
+          width: 400,
+          height: 400,
+          format: 'webp',
+          quality: 80,
+        });
+      }
+    }
+  } catch (error) {
+    console.warn(`Could not process image for sref ${id}:`, error);
+  }
+}
+
+// Use optimized image if available, otherwise fall back to original URL
+const imgSrc = optimizedImage?.src ? toCdnUrl(optimizedImage.src) : coverImageUrl;
+const imgWidth = optimizedImage?.attributes?.width;
+const imgHeight = optimizedImage?.attributes?.height;
 ---
 
 <article class="group relative card overflow-hidden">
   <a href={path} class="block">
-    <div class="aspect-[4/3] overflow-hidden bg-gray-100 relative">
+    <div class="aspect-square overflow-hidden bg-gray-100 relative">
       <img
-        src={coverImageUrl}
+        src={imgSrc}
         alt={title}
         loading="lazy"
+        width={imgWidth}
+        height={imgHeight}
         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
       />
       <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

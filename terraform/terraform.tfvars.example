@@ -1,0 +1,4 @@
+# Copy this to terraform.tfvars and customize
+
+bucket_name = "jtatum-sref-data"
+aws_region  = "us-west-2"

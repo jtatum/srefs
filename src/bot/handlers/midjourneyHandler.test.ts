@@ -103,7 +103,7 @@ describe('midjourneyHandler', () => {
       // Mock successful sref creation
       vi.mocked(createSrefFromMessage).mockResolvedValue({
         srefId: 'abc12345',
-        srefPath: '/public/data/srefs/sref-abc12345',
+        srefPath: '/src/data/srefs/sref-abc12345',
         isNewSref: true
       });
 
@@ -145,7 +145,7 @@ describe('midjourneyHandler', () => {
 
       vi.mocked(createSrefFromMessage).mockResolvedValue({
         srefId: 'test123',
-        srefPath: '/public/data/srefs/sref-test123',
+        srefPath: '/src/data/srefs/sref-test123',
         isNewSref: true
       });
 
@@ -182,7 +182,7 @@ describe('midjourneyHandler', () => {
       // Mock adding to existing sref
       vi.mocked(createSrefFromMessage).mockResolvedValue({
         srefId: 'existing123',
-        srefPath: '/public/data/srefs/sref-existing123',
+        srefPath: '/src/data/srefs/sref-existing123',
         isNewSref: false
       });
 
@@ -302,7 +302,7 @@ describe('midjourneyHandler', () => {
 
       vi.mocked(createSrefFromMessage).mockResolvedValue({
         srefId: 'test123',
-        srefPath: '/public/data/srefs/sref-test123',
+        srefPath: '/src/data/srefs/sref-test123',
         isNewSref: true
       });
 

@@ -2,9 +2,54 @@
 import Layout from '../layouts/Layout.astro';
 import SearchClient from '../components/SearchClient';
 import { getAllSrefs, buildSearchIndex, getSrefCount } from '../lib/srefs';
+import { getImage } from 'astro:assets';
+import { toCdnUrl } from '../lib/cdn-utils';
 
 const srefs = await getAllSrefs();
-const searchIndex = buildSearchIndex(srefs);
+
+// Get all images dynamically using Vite's glob import
+const imageModules = import.meta.glob('/src/data/srefs/*/images/*', { eager: true });
+
+// Process cover images for the search index
+const searchIndexWithImages = await Promise.all(
+  srefs.map(async (sref) => {
+    const searchItem = {
+      id: sref.id,
+      title: sref.title,
+      description: sref.description || '',
+      tags: sref.tags,
+      searchText: `${sref.id} ${sref.title} ${sref.description || ''} ${sref.tags.join(' ')}`.toLowerCase(),
+      coverImageUrl: '',
+      path: sref.path,
+    };
+
+    // Process cover image if available
+    if (sref.coverImagePath) {
+      try {
+        // Find the matching imported image module
+        const imageKey = `/src/${sref.coverImagePath.replace('./data/', 'data/')}`;
+        const imageModule = imageModules[imageKey];
+        
+        if (imageModule?.default) {
+          // Create thumbnail for search results (400x300 for 4:3 aspect ratio)
+          const optimized = await getImage({
+            src: imageModule.default,
+            width: 400,
+            height: 300,
+            format: 'avif',
+            quality: 80,
+          });
+          searchItem.coverImageUrl = toCdnUrl(optimized.src);
+        }
+      } catch (error) {
+        console.warn(`Could not process cover image for sref ${sref.id}:`, error);
+      }
+    }
+
+    return searchItem;
+  })
+);
+
 const srefCount = await getSrefCount();
 ---
 
@@ -50,5 +95,5 @@ const srefCount = await getSrefCount();
   </div>
 
   <div id="explore"></div>
-  <SearchClient client:idle items={searchIndex} />
+  <SearchClient client:idle items={searchIndexWithImages} />
 </Layout>

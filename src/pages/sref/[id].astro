@@ -1,7 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getAllSrefs, getSrefById } from '../../lib/srefs';
+import { getImage } from 'astro:assets';
 import type { ProcessedSref } from '../../lib/types';
+import { toCdnUrl } from '../../lib/cdn-utils';
 
 export async function getStaticPaths() {
   const srefs = await getAllSrefs();
@@ -16,8 +18,108 @@ const { sref } = Astro.props as { sref: ProcessedSref };
 if (!sref) {
   return Astro.redirect('/404');
 }
-const cover = sref.coverImageUrl || (sref.processedImages && sref.processedImages[0]?.url) || '';
-const ogImage = cover ? new URL(cover, Astro.site || Astro.url).toString() : undefined;
+
+// Get all images dynamically using Vite's glob import
+const imageModules = import.meta.glob('/src/data/srefs/*/images/*', { eager: true });
+
+// Process images for responsive display
+const optimizedImages = await Promise.all(
+  sref.processedImages.map(async (image) => {
+    try {
+      // Find the matching imported image module (remove ./ prefix from filePath)
+      const imageKey = `/src/${image.filePath.replace('./data/', 'data/')}`;
+      const imageModule = imageModules[imageKey];
+      
+      if (!imageModule?.default) {
+        console.warn(`Could not find image module for ${imageKey}`);
+        return {
+          ...image,
+          optimizedSrc: '', // No URL available
+          optimizedWidth: image.width,
+          optimizedHeight: image.height,
+          lightboxSrc: '', // No URL available
+        };
+      }
+
+      // Create square gallery image for consistent grid (800x800)
+      let gallery;
+      try {
+        gallery = await getImage({
+          src: imageModule.default,
+          width: 800,
+          height: 800,
+          format: 'avif',
+          quality: 85,
+        });
+      } catch (error) {
+        // Fallback to WebP if AVIF fails
+        gallery = await getImage({
+          src: imageModule.default,
+          width: 800,
+          height: 800,
+          format: 'webp',
+          quality: 85,
+        });
+      }
+
+      // Create high-quality lightbox image (original dimensions, max 1600px)
+      const lightbox = await getImage({
+        src: imageModule.default,
+        width: Math.min(image.width, 1600),
+        height: Math.min(image.height, 1600),
+        format: 'webp',
+        quality: 95,
+      });
+      
+      return {
+        ...image,
+        optimizedSrc: toCdnUrl(gallery.src),
+        optimizedWidth: gallery.attributes?.width,
+        optimizedHeight: gallery.attributes?.height,
+        lightboxSrc: toCdnUrl(lightbox.src),
+      };
+    } catch (error) {
+      console.warn(`Could not process image ${image.filename}:`, error);
+      // If processing fails, return without optimized version
+      return {
+        ...image,
+        optimizedSrc: '', // No URL available
+        optimizedWidth: image.width,
+        optimizedHeight: image.height,
+        lightboxSrc: '', // No URL available
+      };
+    }
+  })
+);
+
+// Generate optimized cover image for OG tags
+let cover = '';
+let ogImage: string | undefined = undefined;
+
+if (sref.coverImagePath) {
+  try {
+    // Find the matching imported cover image module (remove ./ prefix from coverImagePath)
+    const coverImageKey = `/src/${sref.coverImagePath.replace('./data/', 'data/')}`;
+    const coverImageModule = imageModules[coverImageKey];
+    
+    if (coverImageModule?.default) {
+      const coverOptimized = await getImage({
+        src: coverImageModule.default,
+        width: 1200,
+        height: 630,
+        format: 'webp',
+        quality: 80,
+      });
+      cover = coverOptimized.src;
+      ogImage = new URL(cover, Astro.site || Astro.url).toString();
+    }
+  } catch (error) {
+    console.warn('Could not generate cover image:', error);
+  }
+} else if (optimizedImages.length > 0 && optimizedImages[0].optimizedSrc) {
+  cover = optimizedImages[0].optimizedSrc;
+  ogImage = new URL(cover, Astro.site || Astro.url).toString();
+}
 ---
 
 <Layout 
@@ -108,7 +210,7 @@ const ogImage = cover ? new URL(cover, Astro.site || Astro.url).toString() : und
     </div>
     
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {sref.processedImages.map((image, index) => (
+      {optimizedImages.map((image, index) => (
         <div class="group relative">
           <!-- Card Glow Effect -->
           <div class="absolute -inset-0.5 bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-xl blur opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
@@ -116,14 +218,17 @@ const ogImage = cover ? new URL(cover, Astro.site || Astro.url).toString() : und
           <div class="relative glass rounded-xl overflow-hidden border border-white/20 group-hover:border-white/40 transition-all duration-300">
             <div 
               class="overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 relative cursor-pointer"
-              style={`aspect-ratio: ${image.aspectRatio}`}
+              style={`aspect-ratio: 1`}
               data-lightbox="gallery"
               data-index={index}
+              data-original-url={image.lightboxSrc}
             >
               <img
-                src={image.url}
+                src={image.optimizedSrc}
                 alt={image.prompt || sref.title}
                 loading="lazy"
+                width={image.optimizedWidth}
+                height={image.optimizedHeight}
                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
               />
               
@@ -237,7 +342,10 @@ const ogImage = cover ? new URL(cover, Astro.site || Astro.url).toString() : und
     function openLightbox(index) {
       currentImageIndex = index;
       const currentContainer = images[currentImageIndex];
-      const currentImg = currentContainer.querySelector('img');
+      
+      // Use original image URL for lightbox (full quality)
+      const originalImageUrl = currentContainer.dataset.originalUrl || currentContainer.querySelector('img').src;
+      const altText = currentContainer.querySelector('img').alt;
       
       lightboxModal = document.createElement('div');
       lightboxModal.className = 'fixed inset-0 z-50 bg-black bg-opacity-95 flex items-center justify-center p-4';
@@ -259,8 +367,8 @@ const ogImage = cover ? new URL(cover, Astro.site || Astro.url).toString() : und
         </style>
         <div class="lightbox-content relative max-w-full max-h-full flex items-center justify-center">
           <img 
-            src="${currentImg.src}" 
-            alt="${currentImg.alt}" 
+            src="${originalImageUrl}" 
+            alt="${altText}" 
             class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
             style="animation: slideIn 0.3s ease-out;"
           />
