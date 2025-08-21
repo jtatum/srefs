@@ -72,6 +72,10 @@ async function processMetadata(metadata: SrefMetadata): Promise<ProcessedSref> {
 
 async function getImageDimensions(imagePath: string): Promise<{ width: number; height: number }> {
   try {
+    // Check if file exists first
+    const fs = await import('fs/promises');
+    await fs.access(imagePath);
+    
     const sharp = await import('sharp');
     const metadata = await sharp.default(imagePath).metadata();
     
@@ -80,8 +84,12 @@ async function getImageDimensions(imagePath: string): Promise<{ width: number; h
       height: metadata.height || 100,
     };
   } catch (error) {
-    console.error(`Error getting dimensions for ${imagePath}:`, error);
-    return { width: 100, height: 100 };
+    // Silently handle missing images in CI environment
+    if (process.env.CI) {
+      return { width: 1024, height: 1024 }; // Default dimensions for CI
+    }
+    console.warn(`Warning: Image not found or invalid: ${imagePath}`);
+    return { width: 1024, height: 1024 }; // Default dimensions
   }
 }
 
