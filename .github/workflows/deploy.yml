@@ -66,12 +66,34 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Cache S3 downloaded files
+      - name: Cache S3 sref data
+        uses: actions/cache@v4
+        id: s3-cache
+        with:
+          path: src/data/srefs
+          key: s3-srefs-${{ hashFiles('src/data/srefs/**/*') }}
+          restore-keys: |
+            s3-srefs-
+
+      # Cache Astro processed images
+      - name: Cache Astro processed images
+        uses: actions/cache@v4
+        id: astro-cache
+        with:
+          path: dist/_astro
+          key: astro-images-${{ hashFiles('src/data/srefs/**/*') }}
+          restore-keys: |
+            astro-images-
+
       - name: Build with S3 sync and CDN
         env:
           AWS_S3_BUCKET: ${{ vars.AWS_S3_BUCKET }}
           AWS_REGION: us-west-2
           PUBLIC_USE_CDN: 'true'
           PUBLIC_CLOUDFRONT_DOMAIN: ${{ vars.CLOUDFRONT_DOMAIN }}
+          S3_CACHE_HIT: ${{ steps.s3-cache.outputs.cache-hit }}
+          ASTRO_CACHE_HIT: ${{ steps.astro-cache.outputs.cache-hit }}
         run: npm run build
 
       - name: Setup Pages
