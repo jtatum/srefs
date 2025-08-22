@@ -66,23 +66,37 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Cache S3 downloaded files
-      - name: Cache S3 sref data
+      # Cache S3 downloaded sref images only (metadata is committed)
+      - name: Cache S3 sref images
         uses: actions/cache@v4
         id: s3-cache
         with:
-          path: src/data/srefs
-          key: s3-srefs-${{ hashFiles('src/data/srefs/**/*') }}
+          path: src/data/srefs/*/images
+          key: s3-srefs-${{ hashFiles('src/data/srefs/**/meta.yaml') }}
           restore-keys: |
             s3-srefs-
 
-      # Cache Astro processed images
+      # Cache S3 downloaded public assets only (text files are committed)
+      - name: Cache S3 public assets
+        uses: actions/cache@v4
+        id: s3-public-cache
+        with:
+          path: |
+            public/*.png
+            public/*.ico
+          key: s3-public-${{ hashFiles('public/robots.txt', 'public/site.webmanifest') }}
+          restore-keys: |
+            s3-public-
+
+      # Cache Astro processed images and build artifacts
       - name: Cache Astro processed images
         uses: actions/cache@v4
         id: astro-cache
         with:
-          path: dist/_astro
-          key: astro-images-${{ hashFiles('src/data/srefs/**/*') }}
+          path: |
+            dist/_astro
+            node_modules/.astro
+          key: astro-images-${{ hashFiles('src/data/srefs/**/*', 'package-lock.json') }}
           restore-keys: |
             astro-images-
 
@@ -93,6 +107,7 @@ jobs:
           PUBLIC_USE_CDN: 'true'
           PUBLIC_CLOUDFRONT_DOMAIN: ${{ vars.CLOUDFRONT_DOMAIN }}
           S3_CACHE_HIT: ${{ steps.s3-cache.outputs.cache-hit }}
+          S3_PUBLIC_CACHE_HIT: ${{ steps.s3-public-cache.outputs.cache-hit }}
           ASTRO_CACHE_HIT: ${{ steps.astro-cache.outputs.cache-hit }}
         run: npm run build
 
