@@ -61,6 +61,27 @@ resource "aws_cloudfront_distribution" "sref_images_cdn" {
     compress               = true
   }
 
+  # Cache behavior for public assets (very long cache - these rarely change)
+  ordered_cache_behavior {
+    path_pattern     = "/public/*"
+    allowed_methods  = ["GET", "HEAD"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "S3-${aws_s3_bucket.sref_images.bucket}"
+
+    forwarded_values {
+      query_string = false
+      cookies {
+        forward = "none"
+      }
+    }
+
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 86400     # 1 day
+    default_ttl            = 31536000  # 1 year
+    max_ttl                = 31536000  # 1 year
+    compress               = true
+  }
+
   price_class = "PriceClass_100" # US, Canada, Europe
 
   restrictions {

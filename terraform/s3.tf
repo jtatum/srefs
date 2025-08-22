@@ -50,6 +50,105 @@ resource "aws_s3_bucket_cors_configuration" "sref_images_cors" {
   }
 }
 
+# S3 bucket lifecycle configuration
+resource "aws_s3_bucket_lifecycle_configuration" "sref_images_lifecycle" {
+  bucket = aws_s3_bucket.sref_images.id
+
+  # CDN files - delete noncurrent versions and tombstones quickly
+  rule {
+    id     = "cdn_cleanup"
+    status = "Enabled"
+    
+    filter {
+      prefix = "cdn/"
+    }
+
+    noncurrent_version_expiration {
+      noncurrent_days = 7  # Delete old versions after 7 days
+    }
+
+    expiration {
+      expired_object_delete_marker = true  # Remove tombstones immediately
+    }
+  }
+
+  # Source files (srefs) - preserve for 6 months
+  rule {
+    id     = "srefs_cleanup"
+    status = "Enabled"
+    
+    filter {
+      prefix = "srefs/"
+    }
+
+    noncurrent_version_expiration {
+      noncurrent_days = 180  # Delete old versions after 6 months
+    }
+
+    expiration {
+      expired_object_delete_marker = true  # Remove tombstones after they expire
+    }
+  }
+
+  # Source files (public) - preserve for 6 months
+  rule {
+    id     = "public_cleanup"
+    status = "Enabled"
+    
+    filter {
+      prefix = "public/"
+    }
+
+    noncurrent_version_expiration {
+      noncurrent_days = 180  # Delete old versions after 6 months
+    }
+
+    expiration {
+      expired_object_delete_marker = true  # Remove tombstones after they expire
+    }
+  }
+
+  # Transition srefs to cheaper storage before deletion
+  rule {
+    id     = "srefs_transition"
+    status = "Enabled"
+    
+    filter {
+      prefix = "srefs/"
+    }
+
+    noncurrent_version_transition {
+      noncurrent_days = 30
+      storage_class   = "STANDARD_IA"  # Move to Infrequent Access after 30 days
+    }
+
+    noncurrent_version_transition {
+      noncurrent_days = 90
+      storage_class   = "GLACIER"  # Move to Glacier after 90 days
+    }
+  }
+
+  # Transition public assets to cheaper storage before deletion
+  rule {
+    id     = "public_transition"
+    status = "Enabled"
+    
+    filter {
+      prefix = "public/"
+    }
+
+    noncurrent_version_transition {
+      noncurrent_days = 30
+      storage_class   = "STANDARD_IA"  # Move to Infrequent Access after 30 days
+    }
+
+    noncurrent_version_transition {
+      noncurrent_days = 90
+      storage_class   = "GLACIER"  # Move to Glacier after 90 days
+    }
+  }
+}
+
 # S3 bucket policy to allow CloudFront access
 resource "aws_s3_bucket_policy" "sref_images_policy" {
   bucket = aws_s3_bucket.sref_images.id
