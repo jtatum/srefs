@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import SearchClient from '../components/SearchClient';
+import LazySearchClient from '../components/LazySearchClient';
 import { getAllSrefs, buildSearchIndex, getSrefCount } from '../lib/srefs';
 import { getImage } from 'astro:assets';
 import { toCdnUrl } from '../lib/cdn-utils';
@@ -95,5 +95,5 @@ const srefCount = await getSrefCount();
   </div>
 
   <div id="explore"></div>
-  <SearchClient client:idle items={searchIndexWithImages} />
+  <LazySearchClient client:load items={searchIndexWithImages} />
 </Layout>
