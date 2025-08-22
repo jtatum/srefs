@@ -88,7 +88,7 @@ export async function transformManifest(): Promise<void> {
   const manifestPath = path.join(process.cwd(), 'dist', 'site.webmanifest');
   const config = createTransformConfig(
     process.env.PUBLIC_USE_CDN,
-    process.env.CLOUDFRONT_DOMAIN,
+    process.env.PUBLIC_CLOUDFRONT_DOMAIN,
     manifestPath
   );
   
