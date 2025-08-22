@@ -6,7 +6,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { needsSync, listS3Objects, scanLocalSrefFiles, type S3FileInfo, type LocalFileInfo } from './utils/s3-sync-utils.js';
 
-interface SyncConfig {
+export interface SyncConfig {
   bucketName: string;
   region: string;
   localDataDir: string;
@@ -15,7 +15,11 @@ interface SyncConfig {
   publicPrefix: string;
 }
 
-// Remove interface - using S3FileInfo from shared utility
+export interface DownloadPlan {
+  s3Files: S3FileInfo[];
+  localSrefFiles: Map<string, LocalFileInfo>;
+  filesToDownload: S3FileInfo[];
+}
 
 class S3ImageSync {
   private s3Client: S3Client;
@@ -133,27 +137,86 @@ class S3ImageSync {
   }
 }
 
-async function main() {
+// Pure functions for testing
+export function determineFilesToDownload(
+  s3Files: S3FileInfo[], 
+  localSrefFiles: Map<string, LocalFileInfo>
+): S3FileInfo[] {
+  const filesToDownload: S3FileInfo[] = [];
+  
+  for (const s3File of s3Files) {
+    let needsDownload = false;
+    
+    if (s3File.key.startsWith('public/')) {
+      // For public files, we can't check locally without async fs operations
+      // This will be handled in the integration layer
+      needsDownload = true;
+    } else {
+      // For sref files, use existing logic
+      const localFile = localSrefFiles.get(s3File.key);
+      if (!localFile) {
+        needsDownload = true; // File doesn't exist locally
+      } else {
+        // Use shared utility for comparison
+        needsDownload = needsSync(localFile, s3File);
+      }
+    }
+    
+    if (needsDownload) {
+      filesToDownload.push(s3File);
+    }
+  }
+  
+  return filesToDownload;
+}
+
+export function getLocalPathForS3Key(s3Key: string, config: SyncConfig): string {
+  if (s3Key.startsWith('public/')) {
+    // public/favicon.ico -> public/favicon.ico
+    const filename = s3Key.replace(/^public\//, '');
+    return path.join(config.publicDir, filename);
+  } else {
+    // srefs/sref-123/images/photo.jpg -> src/data/srefs/sref-123/images/photo.jpg
+    const relativePath = s3Key.replace(/^srefs\//, '');
+    return path.join(config.localDataDir, 'srefs', relativePath);
+  }
+}
+
+export function createSyncConfig(
+  bucketName: string | undefined,
+  region: string | undefined
+): SyncConfig | null {
+  if (!bucketName) {
+    return null;
+  }
+  
+  return {
+    bucketName,
+    region: region || 'us-east-1',
+    localDataDir: path.join(process.cwd(), 'src', 'data'),
+    publicDir: path.join(process.cwd(), 'public'),
+    srefsPrefix: 'srefs/',
+    publicPrefix: 'public/',
+  };
+}
+
+export async function syncFromS3Main(): Promise<void> {
   // Load environment variables
   const bucketName = process.env.AWS_S3_BUCKET;
-  const region = process.env.AWS_REGION || 'us-east-1';
+  const region = process.env.AWS_REGION;
   
-  if (!bucketName) {
+  const config = createSyncConfig(bucketName, region);
+  
+  if (!config) {
     console.log('⚠️  AWS_S3_BUCKET not configured, skipping S3 sync');
     process.exit(0); // Exit successfully to not break CI
   }
-  
-  const config: SyncConfig = {
-    bucketName,
-    region,
-    localDataDir: path.join(process.cwd(), 'src', 'data'),
-    publicDir: path.join(process.cwd(), 'public'),
-    srefsPrefix: 'srefs/', // Sync files under the srefs/ prefix
-    publicPrefix: 'public/', // Sync files under the public/ prefix
-  };
   
   const sync = new S3ImageSync(config);
   await sync.syncFromS3();
 }
 
-main().catch(console.error);
+// Only run if executed directly
+if (import.meta.url === `file://${process.argv[1]}`) {
+  syncFromS3Main().catch(console.error);
+}

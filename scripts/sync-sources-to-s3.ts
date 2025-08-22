@@ -8,7 +8,7 @@ import path from 'path';
 import { createReadStream } from 'fs';
 import { needsSync, listS3Objects, scanLocalSrefFiles, scanLocalPublicFiles, type S3FileInfo, type LocalFileInfo } from './utils/s3-sync-utils.js';
 
-interface SyncConfig {
+export interface SyncConfig {
   bucketName: string;
   region: string;
   localDataDir: string;
@@ -17,12 +17,19 @@ interface SyncConfig {
   publicPrefix: string;
 }
 
-interface LocalSourceFile {
+export interface LocalSourceFile {
   filePath: string;
   s3Key: string;
   contentType: string;
   size: number;
   etag: string;
+}
+
+export interface SyncSummary {
+  totalFiles: number;
+  uploaded: number;
+  failed: number;
+  skipped: number;
 }
 
 class S3SourceUpload {
@@ -155,53 +162,121 @@ class S3SourceUpload {
   }
 
   private getContentType(filePath: string): string {
-    const ext = path.extname(filePath).toLowerCase();
-    const contentTypes: { [key: string]: string } = {
-      '.jpg': 'image/jpeg',
-      '.jpeg': 'image/jpeg',
-      '.png': 'image/png',
-      '.webp': 'image/webp',
-      '.avif': 'image/avif',
-      '.gif': 'image/gif',
-      '.ico': 'image/vnd.microsoft.icon',
-      '.svg': 'image/svg+xml',
-      '.yaml': 'text/yaml',
-      '.yml': 'text/yaml',
-    };
-    
-    return contentTypes[ext] || 'application/octet-stream';
+    return getContentType(filePath);
   }
 
   private formatBytes(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return formatBytes(bytes);
   }
 }
 
-async function main() {
+// Pure functions for testing
+export function createLocalSourceFilesFromSrefMap(
+  srefFileMap: Map<string, LocalFileInfo>, 
+  localDataDir: string
+): LocalSourceFile[] {
+  return Array.from(srefFileMap.entries()).map(([s3Key, fileInfo]) => {
+    const filePath = path.join(localDataDir, s3Key);
+    return {
+      filePath,
+      s3Key,
+      contentType: getContentType(filePath),
+      size: fileInfo.size,
+      etag: fileInfo.etag,
+    };
+  });
+}
+
+export function createLocalSourceFilesFromPublicMap(
+  publicFileMap: Map<string, LocalFileInfo>, 
+  publicDir: string
+): LocalSourceFile[] {
+  return Array.from(publicFileMap.entries()).map(([s3Key, fileInfo]) => {
+    const filePath = path.join(publicDir, s3Key.replace('public/', ''));
+    return {
+      filePath,
+      s3Key,
+      contentType: getContentType(filePath),
+      size: fileInfo.size,
+      etag: fileInfo.etag,
+    };
+  });
+}
+
+export function determineFilesToUpload(
+  localFiles: LocalSourceFile[], 
+  s3Files: Map<string, S3FileInfo>
+): LocalSourceFile[] {
+  return localFiles.filter(localFile => {
+    const s3File = s3Files.get(localFile.s3Key);
+    if (!s3File) return true; // File doesn't exist in S3
+    
+    // Use shared utility for comparison
+    return needsSync(localFile, s3File);
+  });
+}
+
+export function getContentType(filePath: string): string {
+  const ext = path.extname(filePath).toLowerCase();
+  const contentTypes: { [key: string]: string } = {
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.png': 'image/png',
+    '.webp': 'image/webp',
+    '.avif': 'image/avif',
+    '.gif': 'image/gif',
+    '.ico': 'image/vnd.microsoft.icon',
+    '.svg': 'image/svg+xml',
+    '.yaml': 'text/yaml',
+    '.yml': 'text/yaml',
+  };
+  
+  return contentTypes[ext] || 'application/octet-stream';
+}
+
+export function formatBytes(bytes: number): string {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+export function createSyncConfig(
+  bucketName: string | undefined,
+  region: string | undefined
+): SyncConfig | null {
+  if (!bucketName) {
+    return null;
+  }
+  
+  return {
+    bucketName,
+    region: region || 'us-east-1',
+    localDataDir: path.join(process.cwd(), 'src', 'data'),
+    publicDir: path.join(process.cwd(), 'public'),
+    srefsPrefix: 'srefs/',
+    publicPrefix: 'public/',
+  };
+}
+
+export async function syncSourcesToS3Main(): Promise<void> {
   // Load environment variables
   const bucketName = process.env.AWS_S3_BUCKET;
-  const region = process.env.AWS_REGION || 'us-east-1';
+  const region = process.env.AWS_REGION;
   
-  if (!bucketName) {
+  const config = createSyncConfig(bucketName, region);
+  
+  if (!config) {
     console.log('⚠️  AWS_S3_BUCKET not configured, skipping source sync');
     process.exit(0); // Exit successfully to not break CI
   }
-  
-  const config: SyncConfig = {
-    bucketName,
-    region,
-    localDataDir: path.join(process.cwd(), 'src', 'data'),
-    publicDir: path.join(process.cwd(), 'public'),
-    srefsPrefix: 'srefs/', // Upload source files under srefs/ prefix
-    publicPrefix: 'public/', // Upload public assets under public/ prefix
-  };
   
   const upload = new S3SourceUpload(config);
   await upload.syncSourcesToS3();
 }
 
-main().catch(console.error);
+// Only run if executed directly
+if (import.meta.url === `file://${process.argv[1]}`) {
+  syncSourcesToS3Main().catch(console.error);
+}
