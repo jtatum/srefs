@@ -6,13 +6,15 @@ import { Upload } from '@aws-sdk/lib-storage';
 import fs from 'fs/promises';
 import path from 'path';
 import { createReadStream } from 'fs';
-import { needsSync, listS3Objects, scanLocalSrefFiles, type S3FileInfo, type LocalFileInfo } from './utils/s3-sync-utils.js';
+import { needsSync, listS3Objects, scanLocalSrefFiles, scanLocalPublicFiles, type S3FileInfo, type LocalFileInfo } from './utils/s3-sync-utils.js';
 
 interface SyncConfig {
   bucketName: string;
   region: string;
   localDataDir: string;
+  publicDir: string;
   srefsPrefix: string;
+  publicPrefix: string;
 }
 
 interface LocalSourceFile {
@@ -36,9 +38,9 @@ class S3SourceUpload {
     console.log('🔄 Starting source files sync to S3...');
     
     try {
-      // Get all local source files
-      const localFileMap = await scanLocalSrefFiles(this.config.localDataDir);
-      const localFiles = Array.from(localFileMap.entries()).map(([s3Key, fileInfo]) => {
+      // Get all local sref source files
+      const localSrefFileMap = await scanLocalSrefFiles(this.config.localDataDir);
+      const localSrefFiles = Array.from(localSrefFileMap.entries()).map(([s3Key, fileInfo]) => {
         const filePath = path.join(this.config.localDataDir, s3Key);
         return {
           filePath,
@@ -49,6 +51,21 @@ class S3SourceUpload {
         };
       });
       
+      // Get all local public files
+      const localPublicFileMap = await scanLocalPublicFiles(this.config.publicDir);
+      const localPublicFiles = Array.from(localPublicFileMap.entries()).map(([s3Key, fileInfo]) => {
+        const filePath = path.join(this.config.publicDir, s3Key.replace('public/', ''));
+        return {
+          filePath,
+          s3Key,
+          contentType: this.getContentType(filePath),
+          size: fileInfo.size,
+          etag: fileInfo.etag,
+        };
+      });
+      
+      const localFiles = [...localSrefFiles, ...localPublicFiles];
+      
       console.log(`📂 Found ${localFiles.length} local source files`);
 
       if (localFiles.length === 0) {
@@ -56,9 +73,12 @@ class S3SourceUpload {
         return;
       }
       
-      // Get existing S3 files
-      const s3FilesList = await listS3Objects(this.s3Client, this.config.bucketName, this.config.srefsPrefix);
-      const s3Files = new Map(s3FilesList.map(f => [f.key, f]));
+      // Get existing S3 files (both srefs and public)
+      const [s3SrefFiles, s3PublicFiles] = await Promise.all([
+        listS3Objects(this.s3Client, this.config.bucketName, this.config.srefsPrefix),
+        listS3Objects(this.s3Client, this.config.bucketName, this.config.publicPrefix),
+      ]);
+      const s3Files = new Map([...s3SrefFiles, ...s3PublicFiles].map(f => [f.key, f]));
       console.log(`☁️  Found ${s3Files.size} existing source files in S3`);
       
       // Determine which files need to be uploaded
@@ -143,6 +163,8 @@ class S3SourceUpload {
       '.webp': 'image/webp',
       '.avif': 'image/avif',
       '.gif': 'image/gif',
+      '.ico': 'image/vnd.microsoft.icon',
+      '.svg': 'image/svg+xml',
       '.yaml': 'text/yaml',
       '.yml': 'text/yaml',
     };
@@ -173,7 +195,9 @@ async function main() {
     bucketName,
     region,
     localDataDir: path.join(process.cwd(), 'src', 'data'),
+    publicDir: path.join(process.cwd(), 'public'),
     srefsPrefix: 'srefs/', // Upload source files under srefs/ prefix
+    publicPrefix: 'public/', // Upload public assets under public/ prefix
   };
   
   const upload = new S3SourceUpload(config);

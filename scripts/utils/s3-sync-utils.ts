@@ -143,3 +143,46 @@ export function localPathToS3Key(filePath: string, localDataDir: string): string
   // Convert "src/data/srefs/sref-123/images/file.png" to "srefs/sref-123/images/file.png"
   return path.relative(localDataDir, filePath).replace(/\\/g, '/');
 }
+
+/**
+ * Scan local public directory for image files and build file metadata map
+ */
+export async function scanLocalPublicFiles(publicDir: string): Promise<Map<string, LocalFileInfo>> {
+  const localFiles = new Map<string, LocalFileInfo>();
+  
+  try {
+    const files = await fs.readdir(publicDir);
+    
+    for (const file of files) {
+      const filePath = path.join(publicDir, file);
+      const stats = await fs.stat(filePath);
+      
+      if (stats.isFile() && isImageFile(file)) {
+        // Calculate MD5 hash for ETag comparison
+        const content = await fs.readFile(filePath);
+        const hash = crypto.createHash('md5').update(content).digest('hex');
+        
+        // S3 key format: public/{filename}
+        const s3Key = `public/${file}`;
+        
+        localFiles.set(s3Key, {
+          etag: hash,
+          size: stats.size,
+        });
+      }
+    }
+  } catch (error) {
+    console.warn('Warning: Could not scan local public files:', error);
+  }
+  
+  return localFiles;
+}
+
+/**
+ * Check if a file is an image based on its extension
+ */
+function isImageFile(filename: string): boolean {
+  const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.avif', '.ico', '.svg'];
+  const ext = path.extname(filename).toLowerCase();
+  return imageExtensions.includes(ext);
+}
