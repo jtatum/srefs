@@ -36,7 +36,9 @@ describe('Build Process Integration Tests', () => {
 
   it('should complete build without errors', () => {
     expect(buildError).not.toContain('Error');
-    expect(buildOutput).toContain('Complete!');
+    // "Complete!" might be in stdout or stderr depending on Astro's output stream
+    const allOutput = buildOutput + buildError;
+    expect(allOutput).toContain('Complete!');
   });
 
   it('should generate index.html', async () => {
