@@ -42,3 +42,10 @@ terraform/terraform.tfvars
 src/data/srefs/*/images/
 # Keep metadata files in Git
 !src/data/srefs/*/meta.yaml
+
+# Public assets (now stored in S3)
+public/*.png
+public/*.ico
+# Keep text files in Git
+!public/robots.txt
+!public/site.webmanifest

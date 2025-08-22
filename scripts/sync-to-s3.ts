@@ -82,6 +82,13 @@ class S3ImageUpload {
       console.log('📁 No _astro directory found, skipping processed images');
     }
     
+    // Look for public assets in dist root
+    try {
+      await this.scanDirectory(this.config.distDir, files, 'public', true);
+    } catch (error) {
+      console.log('📁 No public assets found in dist root');
+    }
+    
     // Also look for original images that might be copied to dist
     const dataDir = path.join(this.config.distDir, 'data', 'srefs');
     
@@ -94,14 +101,14 @@ class S3ImageUpload {
     return files;
   }
 
-  private async scanDirectory(dir: string, files: LocalFile[], type: 'processed' | 'original'): Promise<void> {
+  private async scanDirectory(dir: string, files: LocalFile[], type: 'processed' | 'original' | 'public', onlyRoot = false): Promise<void> {
     try {
       const entries = await fs.readdir(dir, { withFileTypes: true });
       
       for (const entry of entries) {
         const fullPath = path.join(dir, entry.name);
         
-        if (entry.isDirectory()) {
+        if (entry.isDirectory() && !onlyRoot) {
           await this.scanDirectory(fullPath, files, type);
         } else if (this.isImageFile(entry.name)) {
           const file = await this.createLocalFile(fullPath, type);
@@ -128,6 +135,10 @@ class S3ImageUpload {
         // Processed images go under cdn/processed/
         const relativePath = path.relative(this.config.distDir, filePath);
         s3Key = `cdn/processed/${relativePath}`;
+      } else if (type === 'public') {
+        // Public assets go under cdn/public/
+        const filename = path.basename(filePath);
+        s3Key = `cdn/public/${filename}`;
       } else {
         // Original images maintain their structure under cdn/
         const dataIndex = filePath.indexOf('/data/srefs/');
@@ -180,7 +191,7 @@ class S3ImageUpload {
   }
 
   private isImageFile(filename: string): boolean {
-    const imageExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.avif', '.gif'];
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.avif', '.gif', '.ico', '.svg'];
     const ext = path.extname(filename).toLowerCase();
     return imageExtensions.includes(ext);
   }
@@ -194,6 +205,8 @@ class S3ImageUpload {
       '.webp': 'image/webp',
       '.avif': 'image/avif',
       '.gif': 'image/gif',
+      '.ico': 'image/vnd.microsoft.icon',
+      '.svg': 'image/svg+xml',
     };
     
     return contentTypes[ext] || 'application/octet-stream';

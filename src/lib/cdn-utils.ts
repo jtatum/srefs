@@ -21,6 +21,45 @@ export function toCdnUrl(localUrl: string): string {
 }
 
 /**
+ * Convert public asset URLs to CDN URLs when CDN is enabled
+ * @param localUrl - The local URL (e.g., "/favicon.ico")
+ * @returns The CDN URL if CDN is enabled, otherwise the original URL
+ */
+export function toPublicCdnUrl(localUrl: string): string {
+  // Get environment variables (PUBLIC_ prefix required for Astro)
+  const USE_CDN = import.meta.env.PUBLIC_USE_CDN === 'true';
+  const CLOUDFRONT_DOMAIN = import.meta.env.PUBLIC_CLOUDFRONT_DOMAIN;
+  
+  // Only convert public URLs to CDN when enabled
+  if (USE_CDN && CLOUDFRONT_DOMAIN && localUrl.startsWith('/')) {
+    const filename = localUrl.substring(1); // Remove leading slash
+    return `https://${CLOUDFRONT_DOMAIN}/public/${filename}`;
+  }
+  
+  return localUrl;
+}
+
+/**
+ * Convert URLs to absolute CDN URLs for social media meta tags
+ * @param localUrl - The local URL (e.g., "/og.png")
+ * @returns The absolute CDN URL if CDN is enabled, otherwise absolute site URL
+ */
+export function toAbsoluteCdnUrl(localUrl: string, siteUrl: string): string {
+  // Get environment variables (PUBLIC_ prefix required for Astro)
+  const USE_CDN = import.meta.env.PUBLIC_USE_CDN === 'true';
+  const CLOUDFRONT_DOMAIN = import.meta.env.PUBLIC_CLOUDFRONT_DOMAIN;
+  
+  // Only convert to CDN when enabled
+  if (USE_CDN && CLOUDFRONT_DOMAIN && localUrl.startsWith('/')) {
+    const filename = localUrl.substring(1); // Remove leading slash
+    return `https://${CLOUDFRONT_DOMAIN}/public/${filename}`;
+  }
+  
+  // Fallback to absolute site URL
+  return new URL(localUrl, siteUrl).toString();
+}
+
+/**
  * Check if CDN is enabled
  * @returns True if CDN should be used
  */
