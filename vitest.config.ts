@@ -22,7 +22,7 @@ export default defineConfig(
             '**/types.ts'
           ],
         },
-        include: ['src/**/*.test.{ts,tsx}', 'tests/**/*.test.{ts,tsx}'],
+        include: ['src/**/*.test.{ts,tsx}', 'tests/**/*.test.{ts,tsx}', 'scripts/**/*.test.{ts,tsx}'],
       },
     })
   )
