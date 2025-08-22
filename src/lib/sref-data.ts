@@ -47,7 +47,7 @@ export async function getSrefMetadataById(id: string): Promise<SrefMetadata | nu
       return null;
     }
     
-    return loadSrefMetadata(matchingDir);
+    return await loadSrefMetadata(matchingDir);
   } catch (error) {
     console.error(`Error finding sref ${id}:`, error);
     return null;

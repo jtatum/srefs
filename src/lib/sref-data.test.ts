@@ -14,6 +14,8 @@ const mockYaml = vi.mocked(yaml);
 describe('sref-data', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Clear console spies to avoid interference between tests
+    vi.restoreAllMocks();
   });
 
   describe('getSrefCount', () => {
@@ -112,6 +114,97 @@ describe('sref-data', () => {
       const sref = await getSrefMetadataById('123');
       
       expect(sref).toBeNull();
+    });
+
+    it('should return null and log error when directory read fails', async () => {
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      
+      mockFs.readdir.mockRejectedValue(new Error('Permission denied'));
+      
+      const sref = await getSrefMetadataById('123');
+      
+      expect(sref).toBeNull();
+      expect(consoleErrorSpy).toHaveBeenCalled();
+      
+      consoleErrorSpy.mockRestore();
+    });
+
+    it('should return null and log error when metadata loading fails', async () => {
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      
+      mockFs.readdir.mockResolvedValue(['sref-123'] as any);
+      mockFs.readFile.mockRejectedValue(new Error('File corrupted'));
+      
+      const sref = await getSrefMetadataById('123');
+      expect(sref).toBeNull();
+      
+      consoleErrorSpy.mockRestore();
+    });
+  });
+
+  describe('autoDiscoverImages error handling', () => {
+    it('should return empty array when images directory does not exist', async () => {
+      // Test lines 73-74 - error handling in autoDiscoverImages when directory read fails
+      mockFs.readdir
+        .mockResolvedValueOnce(['sref-123'] as any) // Initial directory read
+        .mockRejectedValueOnce(new Error('ENOENT: no such file or directory')); // Images directory read fails
+      
+      mockFs.readFile.mockResolvedValue('id: "123"\ntitle: "Test"\ntags: [test]\ncover_image: "cover.png"');
+      mockYaml.load.mockReturnValue({ 
+        id: '123', 
+        title: 'Test', 
+        tags: ['test'], 
+        cover_image: 'cover.png' 
+        // No images array - should trigger auto-discovery
+      });
+      
+      const sref = await getSrefMetadataById('123');
+      
+      expect(sref).not.toBeNull();
+      expect(sref!.images).toEqual([]); // Should return empty array when directory read fails
+    });
+
+    it('should handle permission errors during image discovery', async () => {
+      // Test lines 73-74 - error handling in autoDiscoverImages with different error types
+      mockFs.readdir
+        .mockResolvedValueOnce(['sref-123'] as any) // Initial directory read
+        .mockRejectedValueOnce(new Error('EACCES: permission denied')); // Images directory read fails
+      
+      mockFs.readFile.mockResolvedValue('id: "123"\ntitle: "Test"\ntags: [test]\ncover_image: "cover.png"');
+      mockYaml.load.mockReturnValue({ 
+        id: '123', 
+        title: 'Test', 
+        tags: ['test'], 
+        cover_image: 'cover.png',
+        images: [] // Empty images array should also trigger auto-discovery
+      });
+      
+      const sref = await getSrefMetadataById('123');
+      
+      expect(sref).not.toBeNull();
+      expect(sref!.images).toEqual([]); // Should gracefully handle permission errors
+    });
+  });
+
+  describe('metadata validation', () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
+    });
+
+    it('should validate metadata and handle errors', async () => {
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      
+      // Test case: Invalid metadata missing required fields
+      // When getSrefMetadataById tries to load metadata, validation errors should be caught and return null
+      mockFs.readdir.mockResolvedValueOnce(['sref-123'] as any);
+      mockFs.readFile.mockResolvedValueOnce('invalid: "data"');
+      mockYaml.load.mockReturnValueOnce({ invalid: 'data' }); // Missing required fields
+      
+      const sref = await getSrefMetadataById('123');
+      expect(sref).toBeNull();
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Error finding sref 123:', expect.any(Error));
+      
+      consoleErrorSpy.mockRestore();
     });
   });
 });
