@@ -106,7 +106,10 @@ export async function handleMidjourneyMessage(
       });
 
       const title = modalInteraction.fields.getTextInputValue('title');
-      const tags = modalInteraction.fields.getTextInputValue('tags').split(',').map(t => t.trim());
+      const tags = modalInteraction.fields.getTextInputValue('tags')
+        .split(',')
+        .map(t => t.trim())
+        .filter(t => t.length > 0); // Remove empty tags
       const description = modalInteraction.fields.getTextInputValue('description') || undefined;
 
       await modalInteraction.deferReply({ ephemeral: true });
