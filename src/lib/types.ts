@@ -39,4 +39,5 @@ export interface SearchableItem {
   searchText: string;
   coverImageUrl: string;
   path: string;
+  created?: string;
 }

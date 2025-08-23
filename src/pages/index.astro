@@ -21,6 +21,7 @@ const searchIndexWithImages = await Promise.all(
       searchText: `${sref.id} ${sref.title} ${sref.description || ''} ${sref.tags.join(' ')}`.toLowerCase(),
       coverImageUrl: '',
       path: sref.path,
+      created: sref.created,
     };
 
     // Process cover image if available

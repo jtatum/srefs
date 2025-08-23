@@ -9,7 +9,7 @@ interface SearchClientProps {
 export default function SearchClient({ items }: SearchClientProps) {
   const [query, setQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [results, setResults] = useState<SearchableItem[]>(items);
+  const [results, setResults] = useState<SearchableItem[]>([]);
 
   const allTags = useMemo(() => {
     const tagSet = new Set<string>();
@@ -28,11 +28,18 @@ export default function SearchClient({ items }: SearchClientProps) {
   }, [items]);
 
   useEffect(() => {
-    let filtered = items;
+    let filtered = [...items]; // Create a copy to avoid mutating original array
 
     if (query) {
       const searchResults = fuse.search(query);
       filtered = searchResults.map(result => result.item);
+    } else {
+      // When no search query, sort by newest first
+      filtered = filtered.sort((a, b) => {
+        const dateA = a.created ? new Date(a.created) : new Date(0);
+        const dateB = b.created ? new Date(b.created) : new Date(0);
+        return dateB.getTime() - dateA.getTime();
+      });
     }
 
     if (selectedTags.length > 0) {
