@@ -35,10 +35,6 @@ npm run sync:sources-to-s3        # Upload local source files to S3 (srefs/ and 
 npm run sync:from-s3              # Download source files from S3 to local
 npm run sync:to-s3                # Upload processed files to S3 (cdn/ prefix)
 npm run transform:manifest        # Transform PWA manifest to use CDN URLs
-
-# S3 Migration commands (one-time setup)
-npm run migrate:dry-run           # Test migration without uploading
-npm run migrate:to-s3             # Migrate existing images to S3
 ```
 
 ## Architecture
@@ -157,18 +153,12 @@ The project uses AWS S3 for image storage and CloudFront for fast global deliver
   4. `transform:manifest` - Transform PWA manifest icon URLs to use CDN
   5. `sync:to-s3` - Upload optimized images and public assets to S3 CDN
 
-### Migration (One-time Setup)
+### Initial Setup
 ```bash
 # Deploy AWS infrastructure first
 cd terraform && AWS_PROFILE=srefs terraform apply
 
-# Test migration without uploading
-AWS_PROFILE=srefs npm run migrate:dry-run
-
-# Migrate all existing images to S3
-AWS_PROFILE=srefs npm run migrate:to-s3
-
-# Test the new build pipeline
+# Test the build pipeline
 AWS_PROFILE=srefs npm run build
 ```
 

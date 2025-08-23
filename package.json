@@ -14,8 +14,6 @@
     "sync:to-s3": "tsx scripts/sync-to-s3.ts",
     "sync:sources-to-s3": "tsx scripts/sync-sources-to-s3.ts",
     "transform:manifest": "tsx scripts/transform-manifest.ts",
-    "migrate:to-s3": "tsx scripts/migrate-to-s3.ts",
-    "migrate:dry-run": "tsx scripts/migrate-to-s3.ts --dry-run",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "bot:dev": "tsx watch src/bot/index.ts",

@@ -48,18 +48,10 @@ The updated `deploy.yml` workflow:
 
 4. **Check the Actions tab** for any errors
 
-## Migration Process
+## Deployment
 
-Before the first deploy:
+1. **Push to trigger deployment**
 
-1. **Run migration locally**:
-   ```bash
-   npm run migrate:dry-run  # Test first
-   npm run migrate:to-s3    # Actually migrate
-   ```
-
-2. **Push to trigger deployment**
-
-3. **Images will be served from CloudFront CDN**
+2. **Images will be served from CloudFront CDN**
 
 The deployment will be much faster since it no longer needs to handle large image files through Git LFS!

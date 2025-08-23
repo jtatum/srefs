@@ -72,10 +72,7 @@ This project uses AWS S3 for scalable image storage and CloudFront for fast glob
 # 1. Deploy AWS infrastructure
 cd terraform && AWS_PROFILE=srefs terraform apply
 
-# 2. Migrate existing images
-AWS_PROFILE=srefs npm run migrate:to-s3
-
-# 3. Update GitHub repository variables with Terraform outputs
+# 2. Update GitHub repository variables with Terraform outputs
 ```
 
 ### How it Works
@@ -170,8 +167,6 @@ Perfect for identifying inconsistent tags or finding underutilized categories.
 | Command | Description |
 |---------|-------------|
 | `npx tsx scripts/analyze-tags.ts` | Analyze tag usage statistics and find low-usage tags |
-| `npm run migrate:dry-run` | Test S3 migration without uploading (one-time setup) |
-| `npm run migrate:to-s3` | Migrate existing images to S3 (one-time setup) |
 
 ## Testing
 
