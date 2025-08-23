@@ -1,32 +1,34 @@
 import { describe, it, expect } from 'vitest';
 import { getAllSrefMetadata } from '../../src/lib/sref-data.js';
-import * as spellchecker from 'spellchecker';
+import { spellCheckDocument } from 'cspell-lib';
 
 describe('Tag Spelling Validation', () => {
-  it('should detect misspelled tags using spellchecker', async () => {
+  it('should detect misspelled tags using cspell', async () => {
     const allSrefs = await getAllSrefMetadata();
     const misspelledTags: Array<{tag: string, srefIds: string[], suggestions?: string[]}> = [];
     
+    // Only non-English technical terms and brand names that aren't in dictionaries
+    const customWords = [
+      'sref', 'midjourney', '3d', '1960s', '1980s', '1910s', 
+      'duotone', 'monochrome', 'cyberpunk', 'steampunk',
+      'pinterest', 'instagram', 'artstation'
+    ];
+    
     for (const sref of allSrefs) {
       for (const tag of sref.tags) {
-        // Skip common art/technical terms that might not be in dictionary
-        const skipWords = [
-          'sref', 'midjourney', '3d', '1960s', '1980s', '1910s', 
-          'duotone', 'monochrome', 'cyberpunk', 'steampunk',
-          'pinterest', 'instagram', 'artstation'
-        ];
+        // Use cspell to check the tag with custom words to ignore
+        const result = await spellCheckDocument(
+          { uri: 'text.txt', text: tag, languageId: 'plaintext', locale: 'en' },
+          { generateSuggestions: true, noConfigSearch: true },
+          { words: customWords, suggestionsTimeout: 1000 }
+        );
         
-        if (skipWords.includes(tag.toLowerCase())) {
-          continue;
-        }
-        
-        // Check if the tag is misspelled
-        if (spellchecker.isMisspelled(tag)) {
+        if (result.issues.length > 0) {
           const existing = misspelledTags.find(m => m.tag === tag);
           if (existing) {
             existing.srefIds.push(sref.id);
           } else {
-            const suggestions = spellchecker.getCorrectionsForMisspelling(tag);
+            const suggestions = result.issues[0].suggestions || [];
             misspelledTags.push({
               tag,
               srefIds: [sref.id],
@@ -50,30 +52,40 @@ describe('Tag Spelling Validation', () => {
     }
   });
 
-  it('should detect the psychadelic misspelling', () => {
+  it('should detect the psychadelic misspelling', async () => {
     // Test that our spell checker would catch the old misspelling
     const misspelledWord = 'psychadelic';
-    const isMisspelled = spellchecker.isMisspelled(misspelledWord);
+    const result = await spellCheckDocument(
+      { uri: 'text.txt', text: misspelledWord, languageId: 'plaintext', locale: 'en' },
+      { generateSuggestions: true, noConfigSearch: true },
+      { suggestionsTimeout: 1000 }
+    );
     
-    expect(isMisspelled).toBe(true);
+    expect(result.issues.length).toBeGreaterThan(0);
+    expect(result.issues[0].text).toBe('psychadelic');
     
     // Check that it suggests the correct spelling
-    const suggestions = spellchecker.getCorrectionsForMisspelling(misspelledWord);
+    const suggestions = result.issues[0].suggestions || [];
     expect(suggestions).toContain('psychedelic');
   });
 
-  it('should not flag correctly spelled common art terms', () => {
+  it('should not flag correctly spelled common art terms', async () => {
     const commonArtTerms = [
       'illustration', 'painting', 'abstract', 'surreal', 
       'vintage', 'retro', 'colorful', 'pastel'
     ];
     
     for (const term of commonArtTerms) {
-      expect(spellchecker.isMisspelled(term)).toBe(false);
+      const result = await spellCheckDocument(
+        { uri: 'text.txt', text: term, languageId: 'plaintext', locale: 'en' },
+        { generateSuggestions: false, noConfigSearch: true },
+        { suggestionsTimeout: 1000 }
+      );
+      expect(result.issues.length).toBe(0);
     }
   });
 
-  it('should provide suggestions for misspelled words', () => {
+  it('should provide suggestions for misspelled words', async () => {
     const testMisspellings = [
       { word: 'psychadelic', expectedSuggestion: 'psychedelic' },
       { word: 'irridescent', expectedSuggestion: 'iridescent' },
@@ -81,9 +93,16 @@ describe('Tag Spelling Validation', () => {
     ];
     
     for (const test of testMisspellings) {
-      expect(spellchecker.isMisspelled(test.word)).toBe(true);
+      const result = await spellCheckDocument(
+        { uri: 'text.txt', text: test.word, languageId: 'plaintext', locale: 'en' },
+        { generateSuggestions: true, noConfigSearch: true },
+        { suggestionsTimeout: 1000 }
+      );
       
-      const suggestions = spellchecker.getCorrectionsForMisspelling(test.word);
+      expect(result.issues.length).toBeGreaterThan(0);
+      expect(result.issues[0].text).toBe(test.word);
+      
+      const suggestions = result.issues[0].suggestions || [];
       expect(suggestions).toContain(test.expectedSuggestion);
     }
   });
