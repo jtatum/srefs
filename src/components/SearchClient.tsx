@@ -223,7 +223,12 @@ export default function SearchClient({ items }: SearchClientProps) {
                       <h3 className="text-lg font-bold text-slate-900 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200 leading-tight">
                         {item.title}
                       </h3>
-                      <div className="flex-shrink-0">
+                      <div className="flex-shrink-0 flex items-center gap-2">
+                        {item.isNew && (
+                          <span className="text-xs font-bold bg-gradient-to-r from-green-500 to-emerald-500 text-white px-2 py-1 rounded-full shadow-sm">
+                            NEW
+                          </span>
+                        )}
                         <code className="text-xs font-mono bg-indigo-50 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-200/90 px-3 py-1.5 rounded-full border border-indigo-200 dark:border-indigo-800/60">
                           {item.id}
                         </code>

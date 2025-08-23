@@ -136,6 +136,9 @@ Use this data to:
 - Understand your collection's tag distribution
 - Clean up inconsistent tagging patterns
 
+### Spelling Validation
+Automated spelling validation for tags and titles using cspell. Custom art/design terms are configured in `tests/integration/spelling.test.ts` - add domain-specific words to the `customWords` array to prevent false positives.
+
 ## S3 Image Storage & CDN
 
 The project uses AWS S3 for image storage and CloudFront for fast global delivery.

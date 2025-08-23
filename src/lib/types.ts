@@ -40,4 +40,5 @@ export interface SearchableItem {
   coverImageUrl: string;
   path: string;
   created?: string;
+  isNew?: boolean;
 }

@@ -9,7 +9,7 @@ describe('Tag and Title Spelling Validation', () => {
     'duotone', 'monochrome', 'cyberpunk', 'steampunk',
     'pinterest', 'instagram', 'artstation', 'anime', 'manga',
     'vaporwave', 'synthwave', 'retrowave', 'kawaii', 'chibi',
-    'cuphead', 'tintin'
+    'cuphead', 'tintin', 'dreamscape'
   ];
 
   it('should detect misspelled tags using cspell', async () => {

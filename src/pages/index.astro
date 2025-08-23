@@ -13,6 +13,11 @@ const imageModules = import.meta.glob('/src/data/srefs/*/images/*', { eager: tru
 // Process cover images for the search index
 const searchIndexWithImages = await Promise.all(
   srefs.map(async (sref) => {
+    // Check if sref is new (created within last 7 days)
+    const isNew = sref.created ? 
+      (Date.now() - new Date(sref.created).getTime()) < (7 * 24 * 60 * 60 * 1000) : 
+      false;
+
     const searchItem = {
       id: sref.id,
       title: sref.title,
@@ -22,6 +27,7 @@ const searchIndexWithImages = await Promise.all(
       coverImageUrl: '',
       path: sref.path,
       created: sref.created,
+      isNew,
     };
 
     // Process cover image if available
