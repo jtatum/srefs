@@ -1,0 +1,27 @@
+id: "3987879973"
+title: Hazy pastel dreamscape
+tags:
+  - blurry
+  - illustration
+  - pastel
+  - surreal
+cover_image: image.png
+created: "2025-08-23"
+images:
+  - filename: image.png
+    prompt: >-
+      a mermaid swimming with a school of colorful jellyfish with tendrils,
+      underwater photo
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755952732864.png
+    prompt: "\"\""
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755952738462.png
+    prompt: "\"\""
+    width: 2048
+    height: 2048
+    aspectRatio: 1

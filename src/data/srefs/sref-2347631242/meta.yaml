@@ -1,0 +1,21 @@
+id: "2347631242"
+title: Blurry purple
+tags:
+  - purple
+  - photo
+  - blurry
+cover_image: image.png
+created: "2025-08-23"
+images:
+  - filename: image.png
+    prompt: >-
+      a mermaid swimming with a school of colorful jellyfish with tendrils,
+      underwater photo
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755950757764.png
+    prompt: "\"\""
+    width: 2048
+    height: 2048
+    aspectRatio: 1

@@ -1,0 +1,21 @@
+id: "369517096"
+title: Minimal watercolor
+tags:
+  - surreal
+  - watercolor
+  - surreal
+cover_image: image.png
+created: "2025-08-23"
+images:
+  - filename: image.png
+    prompt: >-
+      a mermaid swimming with a school of colorful jellyfish with tendrils,
+      underwater photo
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755955539273.png
+    prompt: "\"\""
+    width: 2048
+    height: 2048
+    aspectRatio: 1

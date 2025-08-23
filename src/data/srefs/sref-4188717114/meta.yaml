@@ -1,0 +1,26 @@
+id: "4188717114"
+title: Abstract pastel color field
+tags:
+  - iridescent
+  - blurry
+  - abstract
+cover_image: image.png
+created: "2025-08-23"
+images:
+  - filename: image.png
+    prompt: >-
+      a mermaid swimming with a school of colorful jellyfish with tendrils,
+      underwater photo
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755952897008.png
+    prompt: "\"\""
+    width: 2048
+    height: 2048
+    aspectRatio: 1
+  - filename: image-1755953001549.png
+    prompt: an anthropomorphic horse-man on a city street
+    width: 2048
+    height: 2048
+    aspectRatio: 1
