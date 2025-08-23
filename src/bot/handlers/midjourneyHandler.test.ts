@@ -281,6 +281,45 @@ describe('midjourneyHandler', () => {
       });
     });
 
+    it('should handle tags with extra spaces and empty tags', async () => {
+      const { parseMidjourneyMessage } = await import('../utils/midjourneyParser.js');
+      const { createSrefFromMessage } = await import('../utils/srefCreator.js');
+      
+      const mockParsedMessage = {
+        prompt: 'test prompt',
+        jobId: '12345678-1234-1234-1234-123456789abc',
+        imageUrl: 'https://cdn.discord.com/test.png',
+        imageWidth: 1024,
+        imageHeight: 1024,
+        messageType: 'individual' as const
+      };
+
+      vi.mocked(parseMidjourneyMessage).mockReturnValue(mockParsedMessage);
+      vi.mocked(mockInteraction.awaitModalSubmit).mockResolvedValue(mockModalInteraction as any);
+      
+      // Mock tags with extra spaces, empty tags, and mixed formats
+      vi.mocked(mockModalInteraction.fields.getTextInputValue)
+        .mockReturnValueOnce('Test Title')
+        .mockReturnValueOnce(' stained glass , abstract,  cubism , , empty-spaces ')  // messy tags
+        .mockReturnValueOnce('test description');
+
+      vi.mocked(createSrefFromMessage).mockResolvedValue({
+        srefId: 'test123',
+        srefPath: '/src/data/srefs/sref-test123',
+        isNewSref: true
+      });
+
+      await handleMidjourneyMessage(mockMessage as any, mockInteraction as any);
+
+      // Should clean up tags properly: trim spaces and remove empty entries
+      expect(createSrefFromMessage).toHaveBeenCalledWith(
+        mockParsedMessage,
+        'Test Title',
+        ['stained glass', 'abstract', 'cubism', 'empty-spaces'], // cleaned tags
+        'test description'
+      );
+    });
+
     it('should handle message reaction failures gracefully', async () => {
       const { parseMidjourneyMessage } = await import('../utils/midjourneyParser.js');
       const { createSrefFromMessage } = await import('../utils/srefCreator.js');
