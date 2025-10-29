@@ -66,39 +66,39 @@ const srefCount = await getSrefCount();
     <div class="mb-8">
       <div class="relative inline-block">
         <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-[1.05] tracking-tight">
-          <span class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 dark:from-indigo-300 dark:via-purple-300 dark:to-pink-300 bg-clip-text text-transparent block drop-shadow-[0_1px_6px_rgba(0,0,0,0.35)]">Style Reference</span>
-          <span class="bg-gradient-to-r from-sky-500 via-cyan-500 to-emerald-500 dark:from-sky-300 dark:via-cyan-300 dark:to-emerald-300 bg-clip-text text-transparent block drop-shadow-[0_1px_6px_rgba(0,0,0,0.35)]">Gallery</span>
+          <span class="bg-gradient-to-r from-[#7d6fff] via-[#c855ff] to-[#ff55bb] dark:from-[#8b9cff] dark:via-[#c855ff] dark:to-[#ff55bb] bg-clip-text text-transparent block drop-shadow-[0_2px_10px_rgba(125,111,255,0.5)]">Style Reference</span>
+          <span class="bg-gradient-to-r from-[#55b8ff] via-[#00ffff] to-[#00cc99] dark:from-[#55b8ff] dark:via-[#00ffff] dark:to-[#00cc99] bg-clip-text text-transparent block drop-shadow-[0_2px_10px_rgba(85,184,255,0.5)]">Gallery</span>
         </h1>
       </div>
       <div class="max-w-2xl mx-auto">
         <p class="text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-8">
           Discover, browse, and collect 
-          <span class="font-semibold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+          <span class="font-semibold bg-gradient-to-r from-[#c855ff] to-[#ff55bb] bg-clip-text text-transparent drop-shadow-[0_0_8px_rgba(200,85,255,0.4)]">
             Midjourney style references
           </span>. 
           Each sref unlocks unique artistic possibilities for your AI creations.
         </p>
         <div class="mb-8">
-          <div class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-full border border-indigo-200/60 dark:border-indigo-500/30">
-            <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#7d6fff]/10 to-[#c855ff]/10 dark:from-[#7d6fff]/30 dark:to-[#c855ff]/30 rounded-full border border-[#7d6fff]/40 dark:border-[#7d6fff]/60 shadow-[0_0_20px_rgba(125,111,255,0.2)]">
+            <svg class="w-5 h-5 text-[#7d6fff] dark:text-[#8b9cff]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
             </svg>
-            <span class="text-sm font-medium text-indigo-900 dark:text-indigo-200">
+            <span class="text-sm font-medium text-[#5544dd] dark:text-[#a5b8ff]">
               {srefCount.toLocaleString()} style references available
             </span>
           </div>
         </div>
         <div class="flex items-center justify-center gap-3">
-          <a href="#explore" class="btn transition shadow-md hover:shadow-lg hover:-translate-y-0.5 dark:!bg-slate-900/90 dark:!text-slate-200 dark:!border-white/30 dark:hover:!bg-slate-900/95 dark:hover:!text-slate-100 dark:hover:ring-2 dark:hover:ring-indigo-400/60 dark:hover:ring-offset-2 dark:hover:ring-offset-slate-950 dark:hover:drop-shadow-[0_0_16px_rgba(99,102,241,0.28)]">Explore gallery</a>
-          <a href={import.meta.env.BASE_URL + 'about'} class="inline-flex items-center text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline">Learn more</a>
+          <a href="#explore" class="btn transition shadow-[0_0_20px_rgba(125,111,255,0.3)] hover:shadow-[0_0_40px_rgba(125,111,255,0.5),0_0_60px_rgba(200,85,255,0.3)] hover:-translate-y-1 dark:!bg-slate-900/90 dark:!text-slate-200 dark:!border-[#7d6fff]/50 dark:hover:!bg-slate-900/95 dark:hover:!text-slate-100 dark:hover:ring-2 dark:hover:ring-[#7d6fff]/80 dark:hover:ring-offset-2 dark:hover:ring-offset-slate-950 dark:hover:drop-shadow-[0_0_30px_rgba(125,111,255,0.6)]">Explore gallery</a>
+          <a href={import.meta.env.BASE_URL + 'about'} class="inline-flex items-center text-sm font-medium text-[#7d6fff] dark:text-[#8b9cff] hover:underline">Learn more</a>
         </div>
       </div>
     </div>
     
-    <!-- Decorative Elements -->
-    <div class="absolute top-4 left-4 w-20 h-20 bg-gradient-to-br from-indigo-400/20 to-purple-400/20 rounded-full blur-xl"></div>
-    <div class="absolute top-16 right-8 w-32 h-32 bg-gradient-to-br from-pink-400/20 to-orange-400/20 rounded-full blur-xl"></div>
-    <div class="absolute bottom-8 left-1/3 w-24 h-24 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-full blur-xl"></div>
+    <!-- Decorative Elements - GLOWING -->
+    <div class="absolute top-4 left-4 w-20 h-20 bg-gradient-to-br from-[#7d6fff]/40 to-[#c855ff]/40 rounded-full blur-2xl shadow-[0_0_60px_rgba(125,111,255,0.4)]"></div>
+    <div class="absolute top-16 right-8 w-32 h-32 bg-gradient-to-br from-[#ff55bb]/40 to-[#ff5588]/40 rounded-full blur-2xl shadow-[0_0_80px_rgba(255,85,187,0.4)]"></div>
+    <div class="absolute bottom-8 left-1/3 w-24 h-24 bg-gradient-to-br from-[#55b8ff]/40 to-[#00ffff]/40 rounded-full blur-2xl shadow-[0_0_70px_rgba(85,184,255,0.4)]"></div>
   </div>
 
   <div id="explore"></div>
