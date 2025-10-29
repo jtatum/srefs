@@ -2,47 +2,47 @@
 
 :root {
   /* Enhanced Color Palette */
-  --primary-50: #f0f4ff;
-  --primary-100: #e0e7ff;
-  --primary-200: #c7d2fe;
-  --primary-300: #a5b4fc;
-  --primary-400: #818cf8;
-  --primary-500: #6366f1;
-  --primary-600: #4f46e5;
-  --primary-700: #4338ca;
-  --primary-800: #3730a3;
-  --primary-900: #312e81;
-  --accent-500: #a855f7;
-  --pink-500: #ec4899;
+  --primary-50: #f0fdf4;
+  --primary-100: #dcfce7;
+  --primary-200: #bbf7d0;
+  --primary-300: #86efac;
+  --primary-400: #4ade80;
+  --primary-500: #22c55e;
+  --primary-600: #16a34a;
+  --primary-700: #15803d;
+  --primary-800: #166534;
+  --primary-900: #14532d;
+  --accent-500: #10b981;
+  --pink-500: #14b8a6;
   --slate-900: #0f172a;
   --slate-50: #f8fafc;
-  
+
   /* Creative Gradients */
-  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  --gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  --gradient-dark: linear-gradient(135deg, #2d1b69 0%, #11998e 100%);
+  --gradient-primary: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --gradient-secondary: linear-gradient(135deg, #34d399 0%, #14b8a6 100%);
+  --gradient-accent: linear-gradient(135deg, #6ee7b7 0%, #5eead4 100%);
+  --gradient-dark: linear-gradient(135deg, #065f46 0%, #0f766e 100%);
   
   /* Background Patterns */
-  --bg-pattern: radial-gradient(circle at 25% 25%, rgba(79, 70, 229, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 75% 75%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+  --bg-pattern: radial-gradient(circle at 25% 25%, rgba(34, 197, 94, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(20, 184, 166, 0.1) 0%, transparent 50%);
   
   /* Enhanced Shadows */
   --shadow-soft: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
   --shadow-medium: 0 4px 25px -3px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
   --shadow-large: 0 10px 40px -4px rgba(0, 0, 0, 0.15), 0 4px 25px -5px rgba(0, 0, 0, 0.1);
-  --shadow-colored: 0 8px 32px rgba(79, 70, 229, 0.15);
+  --shadow-colored: 0 8px 32px rgba(34, 197, 94, 0.15);
 
   /* Radii & Insets */
   --radius-lg: 16px;
-  --ring: linear-gradient(90deg, rgba(99,102,241,.45), rgba(168,85,247,.45));
+  --ring: linear-gradient(90deg, rgba(34,197,94,.45), rgba(16,185,129,.45));
 }
 
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg-pattern: radial-gradient(circle at 25% 25%, rgba(79, 70, 229, 0.15) 0%, transparent 50%),
-                  radial-gradient(circle at 75% 75%, rgba(236, 72, 153, 0.15) 0%, transparent 50%);
+    --bg-pattern: radial-gradient(circle at 25% 25%, rgba(34, 197, 94, 0.15) 0%, transparent 50%),
+                  radial-gradient(circle at 75% 75%, rgba(20, 184, 166, 0.15) 0%, transparent 50%);
   }
 }
 
@@ -73,7 +73,7 @@ body {
 
 /* Selection styling */
 ::selection {
-  background: rgba(79, 70, 229, 0.2);
+  background: rgba(34, 197, 94, 0.2);
   color: rgb(55, 65, 81);
 }
 
@@ -83,10 +83,10 @@ button, a, input, [role="button"] {
 }
 
 /* Focus states */
-button:focus-visible, 
+button:focus-visible,
 a:focus-visible,
 input:focus-visible {
-  outline: 2px solid rgb(79, 70, 229);
+  outline: 2px solid rgb(34, 197, 94);
   outline-offset: 2px;
   border-radius: 6px;
 }

@@ -133,18 +133,18 @@ if (sref.coverImagePath) {
     <!-- Enhanced Header Section -->
     <div class="relative mb-12">
       <!-- Decorative background elements -->
-      <div class="absolute top-0 left-1/4 w-32 h-32 bg-gradient-to-br from-indigo-400/10 to-purple-400/10 rounded-full blur-3xl"></div>
-      <div class="absolute top-8 right-1/3 w-24 h-24 bg-gradient-to-br from-pink-400/10 to-orange-400/10 rounded-full blur-2xl"></div>
+      <div class="absolute top-0 left-1/4 w-32 h-32 bg-gradient-to-br from-green-400/10 to-emerald-400/10 rounded-full blur-3xl"></div>
+      <div class="absolute top-8 right-1/3 w-24 h-24 bg-gradient-to-br from-teal-400/10 to-cyan-400/10 rounded-full blur-2xl"></div>
       
       <div class="relative glass rounded-2xl p-8 border border-white/20">
         <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-6">
           <div class="flex-1">
             <div class="flex items-center gap-3 mb-4">
-              <h1 class="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-300 dark:via-purple-300 dark:to-pink-300 bg-clip-text text-transparent leading-tight">
+              <h1 class="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 dark:from-green-300 dark:via-emerald-300 dark:to-teal-300 bg-clip-text text-transparent leading-tight">
                 {sref.title}
               </h1>
               <div class="flex-shrink-0">
-                <code class="text-sm font-mono bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700 px-4 py-2 rounded-full border border-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-200 dark:border-indigo-800/60">
+                <code class="text-sm font-mono bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 px-4 py-2 rounded-full border border-green-200 dark:bg-green-900/40 dark:text-green-200 dark:border-green-800/60">
                   --sref {sref.id}
                 </code>
               </div>
@@ -162,10 +162,10 @@ if (sref.coverImagePath) {
           <button
             id="copy-btn"
             data-sref={sref.id}
-            class="group relative inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl hover:from-indigo-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+            class="group relative inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-xl hover:from-green-700 hover:to-emerald-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
             title="Copy --sref command to clipboard"
           >
-            <div class="absolute inset-0 bg-gradient-to-r from-indigo-400/20 to-purple-400/20 rounded-xl blur-xl group-hover:blur-2xl transition-all duration-200"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-green-400/20 to-emerald-400/20 rounded-xl blur-xl group-hover:blur-2xl transition-all duration-200"></div>
             <svg class="relative w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
             </svg>
@@ -192,7 +192,7 @@ if (sref.coverImagePath) {
           <h3 class="text-lg font-semibold text-gray-800 dark:text-slate-200 mb-4">Style Tags</h3>
           <div class="flex flex-wrap gap-3">
             {sref.tags.map((tag) => (
-              <span class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-full hover:border-indigo-200 hover:text-indigo-600 hover:bg-gray-50 transition-all duration-200 dark:text-slate-200 dark:bg-white/10 dark:border-white/15 dark:hover:bg-white/15 dark:hover:border-indigo-800/60">
+              <span class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-full hover:border-green-200 hover:text-green-600 hover:bg-gray-50 transition-all duration-200 dark:text-slate-200 dark:bg-white/10 dark:border-white/15 dark:hover:bg-white/15 dark:hover:border-green-800/60">
                 <svg class="w-3 h-3 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                 </svg>
@@ -213,7 +213,7 @@ if (sref.coverImagePath) {
       {optimizedImages.map((image, index) => (
         <div class="group relative">
           <!-- Card Glow Effect -->
-          <div class="absolute -inset-0.5 bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-xl blur opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+          <div class="absolute -inset-0.5 bg-gradient-to-r from-green-500/20 via-emerald-500/20 to-teal-500/20 rounded-xl blur opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
           
           <div class="relative glass rounded-xl overflow-hidden border border-white/20 group-hover:border-white/40 transition-all duration-300">
             <div 
@@ -255,8 +255,8 @@ if (sref.coverImagePath) {
             {image.prompt && (
               <div class="p-6">
                 <div class="flex items-start gap-3">
-                  <div class="flex-shrink-0 p-2 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg dark:from-indigo-900/30 dark:to-purple-900/30">
-                    <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div class="flex-shrink-0 p-2 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg dark:from-green-900/30 dark:to-emerald-900/30">
+                    <svg class="w-4 h-4 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                     </svg>
                   </div>
@@ -274,9 +274,9 @@ if (sref.coverImagePath) {
     <!-- Enhanced Back Navigation -->
     <div class="mt-16 pt-8 border-t border-white/20">
       <div class="text-center">
-        <a 
-          href={import.meta.env.BASE_URL} 
-          class="group inline-flex items-center gap-3 px-6 py-3 bg-white border border-gray-300 rounded-xl hover:border-indigo-200 text-gray-700 hover:text-indigo-600 transition-all duration-200 hover:shadow-md hover:bg-gray-50 dark:bg-white/5 dark:border-white/15 dark:text-slate-200 dark:hover:bg-white/10 dark:hover:border-indigo-800/60"
+        <a
+          href={import.meta.env.BASE_URL}
+          class="group inline-flex items-center gap-3 px-6 py-3 bg-white border border-gray-300 rounded-xl hover:border-green-200 text-gray-700 hover:text-green-600 transition-all duration-200 hover:shadow-md hover:bg-gray-50 dark:bg-white/5 dark:border-white/15 dark:text-slate-200 dark:hover:bg-white/10 dark:hover:border-green-800/60"
         >
           <svg class="w-5 h-5 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -307,20 +307,20 @@ if (sref.coverImagePath) {
           <span class="relative">Copied!</span>
         `;
         
-        copyBtn.classList.remove('bg-gradient-to-r', 'from-indigo-600', 'to-purple-600');
+        copyBtn.classList.remove('bg-gradient-to-r', 'from-green-600', 'to-emerald-600');
         copyBtn.classList.add('bg-gradient-to-r', 'from-green-500', 'to-emerald-500');
         
         setTimeout(() => {
           copyBtn.innerHTML = `
-            <div class="absolute inset-0 bg-gradient-to-r from-indigo-400/20 to-purple-400/20 rounded-xl blur-xl group-hover:blur-2xl transition-all duration-200"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-green-400/20 to-emerald-400/20 rounded-xl blur-xl group-hover:blur-2xl transition-all duration-200"></div>
             <svg class="relative w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
             </svg>
             <span class="relative">Copy --sref ${srefId}</span>
           `;
-          
+
           copyBtn.classList.remove('bg-gradient-to-r', 'from-green-500', 'to-emerald-500');
-          copyBtn.classList.add('bg-gradient-to-r', 'from-indigo-600', 'to-purple-600');
+          copyBtn.classList.add('bg-gradient-to-r', 'from-green-600', 'to-emerald-600');
         }, 2500);
       } catch (err) {
         console.error('Failed to copy:', err);

@@ -79,7 +79,7 @@ export default function SearchClient({ items }: SearchClientProps) {
       {/* Enhanced Search Interface */}
       <div className="relative max-w-2xl mx-auto">
         <div className="relative group">
-          <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-xl blur-xl group-hover:blur-2xl transition-all duration-300 dark:opacity-60"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-xl blur-xl group-hover:blur-2xl transition-all duration-300 dark:opacity-60"></div>
           <div className="relative glass rounded-xl p-1">
             <input
               type="text"
@@ -89,7 +89,7 @@ export default function SearchClient({ items }: SearchClientProps) {
               aria-label="Search srefs by title, ID, or description"
               className="w-full px-6 py-4 bg-white/80 text-gray-900 placeholder-gray-600 text-lg rounded-lg focus:outline-none focus:bg-white border-0 dark:bg-white/10 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:bg-white/10"
             />
-            <div className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg shadow-lg dark:from-indigo-400/80 dark:to-purple-400/80">
+            <div className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg shadow-lg dark:from-green-400/80 dark:to-emerald-400/80">
               <svg
                 className="w-5 h-5 text-white"
                 fill="none"
@@ -123,14 +123,14 @@ export default function SearchClient({ items }: SearchClientProps) {
                     : 'text-gray-700 dark:text-gray-200 bg-white/60 dark:bg-white/5 border border-gray-200/60 dark:border-white/10 hover:shadow-md hover:bg-white/80 dark:hover:bg-white/10'
                 }`}
                 style={{
-                  background: selectedTags.includes(tag) 
-                    ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                  background: selectedTags.includes(tag)
+                    ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
                     : undefined
                 }}
               >
                 <span className="relative z-10">{tag}</span>
                 {selectedTags.includes(tag) && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-full blur-md"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-full blur-md"></div>
                 )}
               </button>
             ))}
@@ -181,7 +181,7 @@ export default function SearchClient({ items }: SearchClientProps) {
           {results.map(item => (
             <article key={item.id} className="group relative">
               {/* Card Glow Effect */}
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-xl blur opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-green-500/20 via-emerald-500/20 to-teal-500/20 rounded-xl blur opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
               
               <div className="relative glass rounded-xl overflow-hidden border border-white/20 group-hover:border-white/40 transition-all duration-300">
                 <a href={item.path} className="block">
@@ -220,7 +220,7 @@ export default function SearchClient({ items }: SearchClientProps) {
                   
                   <div className="p-6 bg-white/95 dark:bg-slate-900/40">
                     <div className="flex items-start justify-between gap-3 mb-3">
-                      <h3 className="text-lg font-bold text-slate-900 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200 leading-tight">
+                      <h3 className="text-lg font-bold text-slate-900 dark:text-slate-200 group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors duration-200 leading-tight">
                         {item.title}
                       </h3>
                       <div className="flex-shrink-0 flex items-center gap-2">
@@ -229,7 +229,7 @@ export default function SearchClient({ items }: SearchClientProps) {
                             NEW
                           </span>
                         )}
-                        <code className="text-xs font-mono bg-indigo-50 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-200/90 px-3 py-1.5 rounded-full border border-indigo-200 dark:border-indigo-800/60">
+                        <code className="text-xs font-mono bg-green-50 text-green-800 dark:bg-green-900/40 dark:text-green-200/90 px-3 py-1.5 rounded-full border border-green-200 dark:border-green-800/60">
                           {item.id}
                         </code>
                       </div>
@@ -243,9 +243,9 @@ export default function SearchClient({ items }: SearchClientProps) {
                     
                     <div className="flex flex-wrap gap-2">
                       {item.tags.slice(0, 3).map((tag) => (
-                        <span 
-                          key={tag} 
-                          className="chip hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-700 dark:hover:bg-indigo-900/20 dark:hover:border-indigo-800/60 dark:hover:text-indigo-300 transition-all duration-200 cursor-pointer"
+                        <span
+                          key={tag}
+                          className="chip hover:bg-green-50 hover:border-green-200 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:border-green-800/60 dark:hover:text-green-300 transition-all duration-200 cursor-pointer"
                         >
                           {tag}
                         </span>
