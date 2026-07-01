@@ -10,6 +10,10 @@
     "build:cdn": "PUBLIC_USE_CDN=true npm run build",
     "preview": "astro preview",
     "astro": "astro",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "sync:from-s3": "tsx scripts/sync-from-s3.ts",
     "sync:to-s3": "tsx scripts/sync-to-s3.ts",
     "sync:sources-to-s3": "tsx scripts/sync-sources-to-s3.ts",
@@ -44,6 +48,7 @@
     "tsx": "^4.20.4"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.54.2",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.7.0",
@@ -51,8 +56,16 @@
     "@testing-library/user-event": "^14.6.1",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
+    "astro-eslint-parser": "^2.1.0",
     "cspell": "^9.2.0",
+    "eslint": "^10.6.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-astro": "^2.1.1",
+    "globals": "^17.7.0",
     "happy-dom": "^18.0.1",
+    "prettier": "^3.9.4",
+    "prettier-plugin-astro": "^0.14.1",
+    "typescript-eslint": "^8.62.1",
     "vitest": "^3.2.4"
   }
 }
