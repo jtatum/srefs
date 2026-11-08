@@ -99,12 +99,22 @@ export async function handleMidjourneyMessage(
 
     const modalFilter = (i: any) => i.customId === `sref_modal_${message.id}`;
     
+    let modalInteraction;
     try {
-      const modalInteraction = await interaction.awaitModalSubmit({ 
+      modalInteraction = await interaction.awaitModalSubmit({ 
         filter: modalFilter, 
         time: 300000 
       });
+    } catch (error) {
+      console.error('Modal submission timeout or error:', error);
+      await interaction.followUp({ 
+        content: 'Modal submission timed out. Please try again.', 
+        ephemeral: true 
+      });
+      return;
+    }
 
+    try {
       const title = modalInteraction.fields.getTextInputValue('title');
       const tags = modalInteraction.fields.getTextInputValue('tags')
         .split(',')
@@ -131,11 +141,9 @@ export async function handleMidjourneyMessage(
       });
 
     } catch (error) {
-      console.error('Modal submission timeout or error:', error);
-      await interaction.followUp({ 
-        content: 'Modal submission timed out. Please try again.', 
-        ephemeral: true 
-      });
+      // The modal was submitted, so answer on the modal's (deferred) reply
+      console.error('Error creating sref:', error);
+      await modalInteraction.editReply(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 
   } catch (error) {
