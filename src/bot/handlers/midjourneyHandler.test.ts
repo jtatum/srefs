@@ -254,7 +254,12 @@ describe('midjourneyHandler', () => {
       await handleMidjourneyMessage(mockMessage as any, mockInteraction as any);
 
       expect(mockMessage.react).not.toHaveBeenCalled();
-      // Error should be logged to console but interaction should still get a response
+      // The submitted modal's deferred reply must be resolved with the real error,
+      // not left pending while a misleading "timed out" follow-up is sent.
+      expect(mockModalInteraction.editReply).toHaveBeenCalledWith(
+        '❌ Error: Failed to download image: Not Found'
+      );
+      expect(mockInteraction.followUp).not.toHaveBeenCalled();
     });
 
     it('should handle modal timeout', async () => {
